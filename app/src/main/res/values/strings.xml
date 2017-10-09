@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">UdacityMovie</string>
+
+    <!-- Discovery categories -->
+    <string name="most_popular_category">Most popular</string>
+    <string name="highest_rated_category">Highest rated</string>
+    <string name="highest_grossing_category">Highest grossing</string>
 </resources>

@@ -4,12 +4,18 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.playposse.udacitymovie.data.MovieContentContract.DiscoverListMovieTable;
+import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryListTable;
+import com.playposse.udacitymovie.data.MovieContentContract.MovieTable;
+import com.playposse.udacitymovie.util.DbUtil;
+
 /**
  * A helper class that manages the SQLLite database.
  */
 public class MovieDatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "udacitymovie";
+    public  static final String DB_NAME = "udacitymovie";
+
     private static final int DB_VERSION = 1;
 
     public MovieDatabaseHelper(Context context) {
@@ -18,9 +24,11 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(MovieContentContract.MovieTable.SQL_CREATE_TABLE);
-        db.execSQL(MovieContentContract.DiscoverListTable.SQL_CREATE_TABLE);
-        db.execSQL(MovieContentContract.DiscoverListMovieTable.SQL_CREATE_TABLE);
+        db.execSQL(MovieTable.SQL_CREATE_TABLE);
+        db.execSQL(DiscoveryListTable.SQL_CREATE_TABLE);
+        db.execSQL(DiscoverListMovieTable.SQL_CREATE_TABLE);
+
+        DbUtil.executeMultipleSql(db, DiscoveryListTable.SQL_CREATE_DATA);
     }
 
     @Override
