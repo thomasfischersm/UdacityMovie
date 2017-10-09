@@ -36,6 +36,15 @@ public class BuildMovieCacheService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         long start = System.currentTimeMillis();
         Context context = getApplicationContext();
+        queryAllDiscoveryLists(context);
+
+        long end = System.currentTimeMillis();
+        Log.i(LOG_TAG, "onHandleIntent: Fetching movie data took " + (end - start) + "ms.");
+
+        DatabaseDumper.dumpTables(new MovieDatabaseHelper(context));
+    }
+
+    private void queryAllDiscoveryLists(Context context) {
         Cursor discoveryLists = ContentProviderQueries.getDiscoveryLists(context);
         SmartCursor smartCursor = new SmartCursor(discoveryLists, DiscoveryListTable.COLUMN_NAMES);
 
@@ -43,39 +52,37 @@ public class BuildMovieCacheService extends IntentService {
             while (discoveryLists.moveToNext()) {
                 long discoveryListId = smartCursor.getLong(DiscoveryListTable.ID_COLUMN);
                 String sortBy = smartCursor.getString(DiscoveryListTable.SORT_BY_FILTER_COLUMN);
-
-                // Update last retrieved timestamp.
-                ContentProviderQueries.updateDiscoveryListRetrievalDate(context, discoveryListId);
-
-                // Clear old link entries
-                int deleteCount = ContentProviderQueries.deleteDiscoveryListMovieLinks(
-                        context,
-                        discoveryListId);
-                Log.i(LOG_TAG, "onHandleIntent: Deleted link rows: " + deleteCount);
-
-                // Create link entries and movies
-                MovieResultsPage resultsPage = MovieDbApiQueries.getDiscoveryList(sortBy);
-                for (MovieDb movie : resultsPage.getResults()) {
-                    int movieId = movie.getId();
-
-                    // Create link entry.
-                    ContentProviderQueries.insertDiscoveryListMovieLink(
-                            context,
-                            discoveryListId,
-                            movieId);
-
-                    // Update or insert the movie data.
-                    insertOrUpdateMovie(movie);
-                }
+                queryDiscoveryList(context, discoveryListId, sortBy);
             }
         } finally {
             discoveryLists.close();
         }
+    }
 
-        long end = System.currentTimeMillis();
-        Log.i(LOG_TAG, "onHandleIntent: Fetching movie data took " + (end - start) + "ms.");
+    private void queryDiscoveryList(Context context, long discoveryListId, String sortBy) {
+        // Update last retrieved timestamp.
+        ContentProviderQueries.updateDiscoveryListRetrievalDate(context, discoveryListId);
 
-        DatabaseDumper.dumpTables(new MovieDatabaseHelper(context));
+        // Clear old link entries
+        int deleteCount = ContentProviderQueries.deleteDiscoveryListMovieLinks(
+                context,
+                discoveryListId);
+        Log.i(LOG_TAG, "onHandleIntent: Deleted link rows: " + deleteCount);
+
+        // Create link entries and movies
+        MovieResultsPage resultsPage = MovieDbApiQueries.getDiscoveryList(sortBy);
+        for (MovieDb movie : resultsPage.getResults()) {
+            int movieId = movie.getId();
+
+            // Create link entry.
+            ContentProviderQueries.insertDiscoveryListMovieLink(
+                    context,
+                    discoveryListId,
+                    movieId);
+
+            // Update or insert the movie data.
+            insertOrUpdateMovie(movie);
+        }
     }
 
     private void insertOrUpdateMovie(MovieDb movie) {
