@@ -7,6 +7,7 @@ import android.util.Log;
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.model.Discover;
 import info.movito.themoviedbapi.model.MovieDb;
+import info.movito.themoviedbapi.model.Video;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
 
 public class DiscoverMoviesActivity extends AppCompatActivity {
@@ -24,10 +25,16 @@ public class DiscoverMoviesActivity extends AppCompatActivity {
                 TmdbApi tmdbApi = new TmdbApi(Secrets.getMovieApiKeyV3());
                 Discover discover = new Discover();
                 discover.sortBy("popularity.desc");
+
                 MovieResultsPage resultsPage = tmdbApi.getDiscover().getDiscover(discover);
 
                 for (MovieDb movie : resultsPage.getResults() ) {
-                    Log.i(LOG_TAG, "onCreate: Movie is: " + movie.getTitle());
+                    Log.i(LOG_TAG, "onCreate: Movie is: " + movie.getId() + " " + movie.getImdbID() + " " + movie.getTitle() + " " + " " + movie.getOverview());
+                    if (movie.getVideos() != null) {
+                        for (Video video : movie.getVideos()) {
+                            Log.i(LOG_TAG, "run: Video: " + video.getSite() + " " + video.getType() + " " + video.getKey());
+                        }
+                    }
                 }
             }
         }).start();
