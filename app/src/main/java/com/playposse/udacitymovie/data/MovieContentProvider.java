@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoverListMovieTable;
+import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryCategoryQuery;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryListTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieReviewTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieTable;
@@ -30,6 +31,7 @@ public class MovieContentProvider extends ContentProvider {
     private static final int DISCOVERY_LIST_MOVIE_TABLE_KEY = 3;
     private static final int MOVIE_REVIEW_TABLE_KEY = 4;
     private static final int MOVIE_VIDEO_TABLE_KEY = 5;
+    private static final int DISCOVERY_CATEGORY_QUERY = 6;
 
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -40,6 +42,7 @@ public class MovieContentProvider extends ContentProvider {
         uriMatcher.addURI(MovieContentContract.AUTHORITY, DiscoverListMovieTable.PATH, DISCOVERY_LIST_MOVIE_TABLE_KEY);
         uriMatcher.addURI(MovieContentContract.AUTHORITY, MovieReviewTable.PATH, MOVIE_REVIEW_TABLE_KEY);
         uriMatcher.addURI(MovieContentContract.AUTHORITY, MovieVideoTable.PATH, MOVIE_VIDEO_TABLE_KEY);
+        uriMatcher.addURI(MovieContentContract.AUTHORITY, DiscoveryCategoryQuery.PATH, DISCOVERY_CATEGORY_QUERY);
     }
 
     private MovieDatabaseHelper databaseHelper;
@@ -86,6 +89,14 @@ public class MovieContentProvider extends ContentProvider {
                 tableName = MovieVideoTable.TABLE_NAME;
                 notificationUri = MovieVideoTable.CONTENT_URI;
                 break;
+            case DISCOVERY_CATEGORY_QUERY:
+                // Expects the selectionArgs to be the ui_label_res_id.
+                Cursor discoveryCursor =
+                        database.rawQuery(DiscoveryCategoryQuery.SQL_QUERY, selectionArgs);
+                discoveryCursor.setNotificationUri(
+                        contentResolver,
+                        DiscoveryCategoryQuery.CONTENT_URI);
+                return discoveryCursor;
             default:
                 return null;
         }
@@ -126,14 +137,17 @@ public class MovieContentProvider extends ContentProvider {
             case MOVIE_TABLE_KEY:
                 long movieId = database.insert(MovieTable.TABLE_NAME, null, values);
                 contentResolver.notifyChange(MovieTable.CONTENT_URI, null);
+                contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
                 return ContentUris.withAppendedId(MovieTable.CONTENT_URI, movieId);
             case DISCOVERY_LIST_TABLE_KEY:
                 long discoveryListId = database.insert(DiscoveryListTable.TABLE_NAME, null, values);
                 contentResolver.notifyChange(DiscoveryListTable.CONTENT_URI, null);
+                contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
                 return ContentUris.withAppendedId(DiscoveryListTable.CONTENT_URI, discoveryListId);
             case DISCOVERY_LIST_MOVIE_TABLE_KEY:
                 long linkId = database.insert(DiscoverListMovieTable.TABLE_NAME, null, values);
                 contentResolver.notifyChange(DiscoverListMovieTable.CONTENT_URI, null);
+                contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
                 return ContentUris.withAppendedId(DiscoverListMovieTable.CONTENT_URI, linkId);
             case MOVIE_REVIEW_TABLE_KEY:
                 long reviewId = database.insert(MovieReviewTable.TABLE_NAME, null, values);
@@ -167,6 +181,7 @@ public class MovieContentProvider extends ContentProvider {
             case MOVIE_TABLE_KEY:
                 count = database.update(MovieTable.TABLE_NAME, values, selection, selectionArgs);
                 contentResolver.notifyChange(MovieTable.CONTENT_URI, null);
+                contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
                 break;
             case DISCOVERY_LIST_TABLE_KEY:
                 count = database.update(
@@ -175,6 +190,7 @@ public class MovieContentProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 contentResolver.notifyChange(DiscoveryListTable.CONTENT_URI, null);
+                contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
                 break;
             case DISCOVERY_LIST_MOVIE_TABLE_KEY:
                 count = database.update(
@@ -183,6 +199,7 @@ public class MovieContentProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 contentResolver.notifyChange(DiscoverListMovieTable.CONTENT_URI, null);
+                contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
                 break;
             case MOVIE_REVIEW_TABLE_KEY:
                 count = database.update(
@@ -226,10 +243,12 @@ public class MovieContentProvider extends ContentProvider {
             case MOVIE_TABLE_KEY:
                 count = database.delete(MovieTable.TABLE_NAME, selection, selectionArgs);
                 contentResolver.notifyChange(MovieTable.CONTENT_URI, null);
+                contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
                 break;
             case DISCOVERY_LIST_TABLE_KEY:
                 count = database.delete(DiscoveryListTable.TABLE_NAME, selection, selectionArgs);
                 contentResolver.notifyChange(DiscoveryListTable.CONTENT_URI, null);
+                contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
                 break;
             case DISCOVERY_LIST_MOVIE_TABLE_KEY:
                 count = database.delete(
@@ -237,6 +256,7 @@ public class MovieContentProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 contentResolver.notifyChange(DiscoverListMovieTable.CONTENT_URI, null);
+                contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
                 break;
             case MOVIE_REVIEW_TABLE_KEY:
                 count = database.delete(MovieReviewTable.TABLE_NAME, selection, selectionArgs);

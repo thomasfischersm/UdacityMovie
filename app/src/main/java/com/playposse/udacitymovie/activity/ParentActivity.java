@@ -27,9 +27,9 @@ import butterknife.ButterKnife;
  */
 public abstract class ParentActivity extends AppCompatActivity {
 
-    @BindView(R.id.drawerLayout) DrawerLayout drawerLayout;
-    @BindView(R.id.mainFragmentContainer) LinearLayout mainFragmentContainer;
-    @BindView(R.id.navigationView) NavigationView navigationView;
+    @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
+    @BindView(R.id.main_fragment_container) LinearLayout mainFragmentContainer;
+    @BindView(R.id.navigation_view) NavigationView navigationView;
     @BindView(R.id.my_toolbar) Toolbar toolbar;
 
     private ActionBarDrawerToggle drawerToggle;
@@ -40,7 +40,6 @@ public abstract class ParentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ButterKnife.setDebug(true);
 
         setContentView(R.layout.activity_parent);
         ButterKnife.bind(this);
@@ -90,7 +89,7 @@ public abstract class ParentActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        fragmentTransaction.add(R.id.mainFragmentContainer, mainFragment);
+        fragmentTransaction.add(R.id.main_fragment_container, mainFragment);
         fragmentTransaction.commit();
     }
 

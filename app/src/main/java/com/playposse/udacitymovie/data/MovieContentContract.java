@@ -111,7 +111,7 @@ public class MovieContentContract {
         public static final String TABLE_NAME = "discovery_list_movie";
 
         public static final String ID_COLUMN = _ID;
-        public static final String DISCOVERY_LIST_ID_COLUMN = "discover_list_id";
+        public static final String DISCOVERY_LIST_ID_COLUMN = "discovery_list_id";
         public static final String MOVIE_ID_COLUMN = "movie_id";
 
         public static final String[] COLUMN_NAMES = new String[]{
@@ -122,9 +122,9 @@ public class MovieContentContract {
         static final String SQL_CREATE_TABLE =
                 "CREATE TABLE discovery_list_movie "
                         + "(_id INTEGER PRIMARY KEY, "
-                        + "discover_list_id INTEGER, "
+                        + "discovery_list_id INTEGER, "
                         + "movie_id INTEGER," +
-                        "FOREIGN KEY(discover_list_id) REFERENCES discovery_list(_id)," +
+                        "FOREIGN KEY(discovery_list_id) REFERENCES discovery_list(_id)," +
                         "FOREIGN KEY(movie_id) REFERENCES movie(_id))";
     }
 
@@ -190,5 +190,23 @@ public class MovieContentContract {
                         + "key TEXT, "
                         + "type TEXT, "
                         + "FOREIGN KEY(movie_id) REFERENCES movie(_id))";
+    }
+
+    /**
+     * A query that returns a list of movies that are inside of a category.
+     */
+    public static final class DiscoveryCategoryQuery implements BaseColumns {
+        public static final String PATH = "discoverycategoryquery";
+        public static final Uri CONTENT_URI = createContentUri(PATH);
+
+        public static final String[] COLUMN_NAMES = MovieTable.COLUMN_NAMES;
+
+        static final String SQL_QUERY =
+                "select movie.* from discovery_list " +
+                        "join discovery_list_movie " +
+                        "on discovery_list._id=discovery_list_movie.discovery_list_id " +
+                        "join movie " +
+                        "on discovery_list_movie.movie_id=movie._id " +
+                        "where discovery_list.ui_label_res_id=?";
     }
 }
