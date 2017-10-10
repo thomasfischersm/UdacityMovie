@@ -136,9 +136,11 @@ public class DiscoverFragment extends Fragment implements LoaderManager.LoaderCa
             Double voteAverage = smartCursor.getDouble(MovieTable.VOTE_AVERAGE_COLUMN);
             String voteAverageStr = getString(R.string.average_vote_format, voteAverage);
 
-            Glide.with(getActivity())
-                    .load(posterUrl)
-                    .into(holder.posterImageView);
+            if (posterPath != null) {
+                Glide.with(getActivity())
+                        .load(posterUrl)
+                        .into(holder.posterImageView);
+            }
             holder.titleTextView.setText(title);
             holder.voteAverageTextView.setText(voteAverageStr);
         }

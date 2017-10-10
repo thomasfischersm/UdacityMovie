@@ -20,8 +20,7 @@
             android:background="?attr/colorPrimary"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-        </android.support.v7.widget.Toolbar>
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         <!-- Main content fragment goes here. -->
     </LinearLayout>
@@ -31,5 +30,6 @@
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        app:headerLayout="@layout/navigation_header"
         app:menu="@menu/navigation_menu" />
 </android.support.v4.widget.DrawerLayout>

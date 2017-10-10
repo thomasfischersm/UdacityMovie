@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UdacityMovie</string>
+    <string name="app_name">Udacity Movie App</string>
 
     <!-- Discovery categories -->
     <string name="most_popular_category">Most popular</string>
@@ -10,6 +10,9 @@
     <string name="my_favorites_navigation">My favorites</string>
     <string name="drawer_open">Navigation drawer opens</string>
     <string name="drawer_close">Navigation drawer closes</string>
+    <string name="navigation_header_content_description">Decorative photo to symbolize Hollywood/movies.</string>
+    <string name="discovery_section">Discover movies</string>
+    <string name="my_library_section">My library</string>
 
     <!-- Discovery activity -->
     <string name="poster_content_description">Movie poster</string>
