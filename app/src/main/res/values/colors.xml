@@ -7,4 +7,5 @@
     <color name="lightTextColor">#FFFFFF</color>
     <color name="ratingCircleBg">#B3000000</color>
     <color name="translucentBackground">#7F000000</color>
+    <color name="dividerLine">#C0C0C0</color>
 </resources>

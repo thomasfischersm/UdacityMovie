@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.playposse.udacitymovie.R;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieQuery;
+import com.playposse.udacitymovie.data.MovieContentContract.MovieReviewTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieVideoTable;
 import com.playposse.udacitymovie.util.MediaUrlBuilder;
@@ -39,6 +40,7 @@ public class MovieFragment extends Fragment {
     private static final String MOVIE_ID = "movieId";
     private static final int MOVIE_LOADER_MANAGER_ID = 2;
     private static final int VIDEO_LOADER_MANAGER_ID = 3;
+    private static final int REVIEW_LOADER_MANAGER_ID = 4;
     private static final int GRID_SPAN = 1;
 
     @BindView(R.id.backdrop_image_view) ImageView backdropImageView;
@@ -50,10 +52,12 @@ public class MovieFragment extends Fragment {
     @BindView(R.id.rating_text_view) TextView ratingTextView;
     @BindView(R.id.overview_text_layout) TextView overviewTextView;
     @BindView(R.id.video_recycler_view) RecyclerView videoRecyclerView;
+    @BindView(R.id.review_recycler_view) RecyclerView reviewRecyclerView;
 
     private long movieId;
 
     private VideoAdapter videoAdapter;
+    private ReviewAdapter reviewAdapter;
 
     public static MovieFragment newInstance(Intent intent) {
         long movieId = ActivityNavigator.getMovieId(intent);
@@ -85,14 +89,21 @@ public class MovieFragment extends Fragment {
 
         ButterKnife.bind(this, rootView);
 
-        // Small performance improvement.
+        // Set up videos
         videoRecyclerView.setHasFixedSize(true);
-
-        GridLayoutManager layoutManager =
+        GridLayoutManager videoLayoutManager =
                 new GridLayoutManager(getActivity(), GRID_SPAN, GridLayoutManager.HORIZONTAL, false);
-        videoRecyclerView.setLayoutManager(layoutManager);
+        videoRecyclerView.setLayoutManager(videoLayoutManager);
         videoAdapter = new VideoAdapter();
         videoRecyclerView.setAdapter(videoAdapter);
+
+        // Set up  reviews.
+        reviewRecyclerView.setHasFixedSize(true);
+        GridLayoutManager reviewLayoutManager =
+                new GridLayoutManager(getActivity(), GRID_SPAN, GridLayoutManager.VERTICAL, false);
+        reviewRecyclerView.setLayoutManager(reviewLayoutManager);
+        reviewAdapter = new ReviewAdapter();
+        reviewRecyclerView.setAdapter(reviewAdapter);
 
         return rootView;
     }
@@ -103,6 +114,7 @@ public class MovieFragment extends Fragment {
 
         getLoaderManager().initLoader(MOVIE_LOADER_MANAGER_ID, null, new MovieLoaderCallbacks());
         getLoaderManager().initLoader(VIDEO_LOADER_MANAGER_ID, null, new VideoLoaderCallbacks());
+        getLoaderManager().initLoader(REVIEW_LOADER_MANAGER_ID, null, new ReviewLoaderCallbacks());
     }
 
     /**
@@ -190,6 +202,34 @@ public class MovieFragment extends Fragment {
             videoAdapter.swapCursor(null);
         }
     }
+
+    /**
+     * A {@link LoaderCallbacks<Cursor>} that loads reviews.
+     */
+    private class ReviewLoaderCallbacks implements LoaderCallbacks<Cursor> {
+
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            return new CursorLoader(
+                    getActivity(),
+                    MovieReviewTable.CONTENT_URI,
+                    MovieReviewTable.COLUMN_NAMES,
+                    MovieReviewTable.MOVIE_ID_COLUMN + "=?",
+                    new String[]{Long.toString(movieId)},
+                    null);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+            reviewAdapter.swapCursor(cursor);
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+            reviewAdapter.swapCursor(null);
+        }
+    }
+
     /**
      * An adapter that manages a list of videos (e.g. trailer).
      */
@@ -231,6 +271,47 @@ public class MovieFragment extends Fragment {
         @BindView(R.id.type_text_view) TextView typeTextView;
 
         private VideoViewHolder(View itemView) {
+            super(itemView);
+
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    /**
+     * An adapter that manages a list of reviews.
+     */
+    private class ReviewAdapter extends RecyclerViewCursorAdapter<ReviewViewHolder> {
+
+        @Override
+        public ReviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(getActivity()).inflate(
+                    R.layout.review_list_item,
+                    parent,
+                    false);
+            return new ReviewViewHolder(view);
+        }
+
+        @Override
+        protected void onBindViewHolder(ReviewViewHolder holder, int position, Cursor cursor) {
+            SmartCursor smartCursor = new SmartCursor(cursor, MovieReviewTable.COLUMN_NAMES);
+
+            String content = smartCursor.getString(MovieReviewTable.CONTENT_COLUMN);
+            String author = smartCursor.getString(MovieReviewTable.AUTHOR_COLUMN);
+
+            holder.contentTextView.setText(content);
+            holder.authorTextView.setText(author);
+        }
+    }
+
+    /**
+     * A {@link RecyclerView.ViewHolder} for a video.
+     */
+    class ReviewViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.content_text_view) TextView contentTextView;
+        @BindView(R.id.author_text_view) TextView authorTextView;
+
+        private ReviewViewHolder(View itemView) {
             super(itemView);
 
             ButterKnife.bind(this, itemView);

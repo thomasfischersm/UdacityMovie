@@ -24,4 +24,5 @@
     <string name="runtime_label">Runtime</string>
     <string name="rating_label">Rating</string>
     <string name="video_content_description">A video from the movie (e.g. a trailer or clip)</string>
+    <string name="reviews_header">Reviews</string>
 </resources>

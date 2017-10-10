@@ -120,5 +120,20 @@
             android:id="@+id/video_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/divider_line_width"
+            android:background="@color/dividerLine"/>
+
+        <TextView
+            android:text="@string/reviews_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/review_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </ScrollView>
