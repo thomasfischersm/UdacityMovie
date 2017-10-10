@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <item
+            android:id="@+id/discover_most_popular_menu_item"
+            android:title="@string/most_popular_category" />
+        <item
+            android:id="@+id/discover_highest_rated_menu_item"
+            android:title="@string/highest_rated_category" />
+        <item
+            android:id="@+id/discover_highest_grossing_menu_item"
+            android:title="@string/highest_grossing_category" />
+    </group>
+    <group>
+        <item
+            android:id="@+id/send_feedback_menu_item"
+            android:title="@string/my_favorites_navigation" />
+    </group>
+</menu>

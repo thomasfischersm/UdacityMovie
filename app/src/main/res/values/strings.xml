@@ -5,4 +5,12 @@
     <string name="most_popular_category">Most popular</string>
     <string name="highest_rated_category">Highest rated</string>
     <string name="highest_grossing_category">Highest grossing</string>
+
+    <!-- Navigation drawer -->
+    <string name="my_favorites_navigation">My favorites</string>
+    <string name="drawer_open">Navigation drawer opens</string>
+    <string name="drawer_close">Navigation drawer closes</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment33323</string>
 </resources>

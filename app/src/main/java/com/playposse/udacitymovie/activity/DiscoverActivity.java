@@ -1,8 +1,10 @@
-package com.playposse.udacitymovie;
+package com.playposse.udacitymovie.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import com.playposse.udacitymovie.R;
+import com.playposse.udacitymovie.Secrets;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.model.Discover;
@@ -10,14 +12,44 @@ import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.Video;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
 
-public class DiscoverMoviesActivity extends AppCompatActivity {
+public class DiscoverActivity extends ParentActivity {
 
-    private static final String LOG_TAG = DiscoverMoviesActivity.class.getSimpleName();
+    private static final String LOG_TAG = DiscoverActivity.class.getSimpleName();
+
+    public enum DiscoveryCategory {
+        mostPopular(R.string.most_popular_category, R.id.discover_most_popular_menu_item),
+        highestRated(R.string.highest_rated_category, R.id.discover_highest_rated_menu_item),
+        highestGrossing(
+                R.string.highest_grossing_category,
+                R.id.discover_highest_grossing_menu_item),
+        ;
+
+        private int labelResId;
+        private int menuResId;
+
+        DiscoveryCategory(int labelResId, int menuResId) {
+            this.labelResId = labelResId;
+            this.menuResId = menuResId;
+        }
+
+        public int getLabelResId() {
+            return labelResId;
+        }
+
+        public int getMenuResId() {
+            return menuResId;
+        }
+    }
+
+    public static final String DISCOVER_CATEGORY_EXTRA_CONSTANT = "discoverCategory";
+    public static final int DEFAULT_CATEGORY = R.id.discover_most_popular_menu_item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_discover_movies);
+
+        DiscoveryCategory discoveryCategory = ActivityNavigator.getDiscoveryCategory(getIntent());
+        addMainFragment(DiscoverFragment.newInstance(discoveryCategory));
 
         new Thread(new Runnable() {
             @Override

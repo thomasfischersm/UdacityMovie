@@ -1,4 +1,4 @@
-package com.playposse.udacitymovie.services;
+package com.playposse.udacitymovie.service;
 
 import android.app.IntentService;
 import android.app.Service;

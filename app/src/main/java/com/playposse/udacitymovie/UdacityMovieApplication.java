@@ -4,7 +4,9 @@ import android.app.Application;
 import android.content.Intent;
 
 import com.playposse.udacitymovie.data.MovieDatabaseHelper;
-import com.playposse.udacitymovie.services.BuildMovieCacheService;
+import com.playposse.udacitymovie.service.BuildMovieCacheService;
+
+import butterknife.ButterKnife;
 
 /**
  * Implementation of the {@link Application}.
@@ -17,5 +19,7 @@ public class UdacityMovieApplication extends Application {
         getApplicationContext().deleteDatabase(MovieDatabaseHelper.DB_NAME);
 
         startService(new Intent(getApplicationContext(), BuildMovieCacheService.class));
+
+        ButterKnife.setDebug(true);
     }
 }

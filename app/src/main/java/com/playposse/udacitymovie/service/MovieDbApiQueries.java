@@ -1,4 +1,4 @@
-package com.playposse.udacitymovie.services;
+package com.playposse.udacitymovie.service;
 
 import android.support.annotation.NonNull;
 
@@ -26,7 +26,7 @@ final class MovieDbApiQueries {
 
     static MovieResultsPage getDiscoveryList(String sortByFilter) {
         Discover discover = new Discover();
-        discover.sortBy("popularity.desc");
+        discover.sortBy(sortByFilter);
         return getTmdbApi().getDiscover().getDiscover(discover);
     }
 
