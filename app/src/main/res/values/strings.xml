@@ -20,9 +20,13 @@
 
     <!-- Movie activity -->
     <string name="backdrop_content_description">Movie backdrop</string>
+    <string name="favorite_icon_content_description">An icon that indicates if this movie is your favorite.</string>
     <string name="release_year_label">Release year</string>
     <string name="runtime_label">Runtime</string>
     <string name="rating_label">Rating</string>
     <string name="video_content_description">A video from the movie (e.g. a trailer or clip)</string>
     <string name="reviews_header">Reviews</string>
+
+    <!-- Favorite activity -->
+    <string name="favorite_activity_title">Your favorites</string>
 </resources>

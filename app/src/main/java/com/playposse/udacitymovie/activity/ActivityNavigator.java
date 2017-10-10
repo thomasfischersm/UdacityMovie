@@ -64,4 +64,8 @@ final class ActivityNavigator {
         Uri videoUri = Uri.parse(videoUrl);
         context.startActivity(new Intent(Intent.ACTION_VIEW, videoUri));
     }
+
+    static void startFavoriteActivity(Context context) {
+        context.startActivity(new Intent(context, FavoriteActivity.class));
+    }
 }

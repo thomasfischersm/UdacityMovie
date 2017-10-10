@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.playposse.udacitymovie.R;
+import com.playposse.udacitymovie.data.ContentProviderQueries;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieQuery;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieReviewTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieTable;
@@ -44,6 +45,7 @@ public class MovieFragment extends Fragment {
     private static final int GRID_SPAN = 1;
 
     @BindView(R.id.backdrop_image_view) ImageView backdropImageView;
+    @BindView(R.id.favorite_image_view) ImageView favoriteImageView;
     @BindView(R.id.title_text_view) TextView titleTextView;
     @BindView(R.id.tagline_text_view) TextView taglineTextView;
     @BindView(R.id.poster_image_view) ImageView posterImageView;
@@ -148,6 +150,7 @@ public class MovieFragment extends Fragment {
                 String runtime = smartCursor.getString(MovieTable.RUNTIME_COLUMN);
                 String rating = smartCursor.getString(MovieTable.VOTE_AVERAGE_COLUMN);
                 String overview = smartCursor.getString(MovieTable.OVERVIEW_COLUMN);
+                final boolean isFavorite = smartCursor.getBoolean(MovieQuery.IS_FAVORITE_COLUMN);
 
                 titleTextView.setText(title);
                 taglineTextView.setText(tagline);
@@ -155,6 +158,12 @@ public class MovieFragment extends Fragment {
                 runtimeTextView.setText(runtime);
                 ratingTextView.setText(rating);
                 overviewTextView.setText(overview);
+
+                if (isFavorite) {
+                    favoriteImageView.setImageResource(R.drawable.ic_favorite_black_24dp);
+                } else {
+                    favoriteImageView.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                }
 
                 Glide.with(getActivity())
                         .load(backdropUrl)
@@ -165,6 +174,13 @@ public class MovieFragment extends Fragment {
                         .into(posterImageView);
 
                 getActivity().setTitle(title);
+
+                favoriteImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ContentProviderQueries.favorMovie(getActivity(), movieId, !isFavorite);
+                    }
+                });
             }
         }
 

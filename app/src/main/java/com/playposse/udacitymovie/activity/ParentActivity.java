@@ -114,6 +114,11 @@ public abstract class ParentActivity extends AppCompatActivity {
                 finish();
                 ActivityNavigator.startDiscoverActivity(this, item.getItemId());
                 return true;
+            case R.id.favorite_menu_item:
+                drawerLayout.closeDrawers();
+                finish();
+                ActivityNavigator.startFavoriteActivity(this);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

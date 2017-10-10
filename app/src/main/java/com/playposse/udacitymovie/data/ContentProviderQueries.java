@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoverListMovieTable;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryListTable;
+import com.playposse.udacitymovie.data.MovieContentContract.FavoriteTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieReviewTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieVideoTable;
@@ -19,7 +20,8 @@ public final class ContentProviderQueries {
 
     private static final String LOG_TAG = ContentProviderQueries.class.getSimpleName();
 
-    private ContentProviderQueries() {}
+    private ContentProviderQueries() {
+    }
 
     public static Cursor getDiscoveryLists(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
@@ -144,5 +146,21 @@ public final class ContentProviderQueries {
                 "has_extended_info = 0",
                 null,
                 null);
+    }
+
+    public static void favorMovie(Context context, long movieId, boolean shouldBeFavorite) {
+        ContentResolver contentResolver = context.getContentResolver();
+
+        if (shouldBeFavorite) {
+            ContentValues values = new ContentValues();
+            values.put(FavoriteTable.MOVIE_ID_COLUMN, movieId);
+
+            contentResolver.insert(FavoriteTable.CONTENT_URI, values);
+        } else {
+            contentResolver.delete(
+                    FavoriteTable.CONTENT_URI,
+                    FavoriteTable.MOVIE_ID_COLUMN + "=?",
+                    new String[]{Long.toString(movieId)});
+        }
     }
 }

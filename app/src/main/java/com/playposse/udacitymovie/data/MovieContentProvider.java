@@ -15,11 +15,13 @@ import android.util.Log;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoverListMovieTable;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryCategoryQuery;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryListTable;
+import com.playposse.udacitymovie.data.MovieContentContract.FavoriteQuery;
 import com.playposse.udacitymovie.data.MovieContentContract.FavoriteTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieQuery;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieReviewTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieVideoTable;
+import com.playposse.udacitymovie.util.DatabaseDumper;
 
 /**
  * A {@link ContentProvider} that stores the movie information from the Movie Database locally.
@@ -36,6 +38,7 @@ public class MovieContentProvider extends ContentProvider {
     private static final int DISCOVERY_CATEGORY_QUERY_KEY = 6;
     private static final int FAVORITE_TABLE_KEY = 7;
     private static final int MOVIE_QUERY_KEY = 8;
+    private static final int FAVORITE_QUERY_KEY = 9;
 
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -49,6 +52,7 @@ public class MovieContentProvider extends ContentProvider {
         uriMatcher.addURI(MovieContentContract.AUTHORITY, DiscoveryCategoryQuery.PATH, DISCOVERY_CATEGORY_QUERY_KEY);
         uriMatcher.addURI(MovieContentContract.AUTHORITY, FavoriteTable.PATH, FAVORITE_TABLE_KEY);
         uriMatcher.addURI(MovieContentContract.AUTHORITY, MovieQuery.PATH, MOVIE_QUERY_KEY);
+        uriMatcher.addURI(MovieContentContract.AUTHORITY, FavoriteQuery.PATH, FAVORITE_QUERY_KEY);
     }
 
     private MovieDatabaseHelper databaseHelper;
@@ -115,6 +119,13 @@ public class MovieContentProvider extends ContentProvider {
                         contentResolver,
                         MovieQuery.CONTENT_URI);
                 return movieCursor;
+            case FAVORITE_QUERY_KEY:
+                Cursor favoriteCursor =
+                        database.rawQuery(FavoriteQuery.SQL_QUERY, selectionArgs);
+                favoriteCursor.setNotificationUri(
+                        contentResolver,
+                        FavoriteQuery.CONTENT_URI);
+                return favoriteCursor;
             default:
                 return null;
         }
@@ -182,11 +193,13 @@ public class MovieContentProvider extends ContentProvider {
                 contentResolver.notifyChange(MovieTable.CONTENT_URI, null);
                 contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
                 contentResolver.notifyChange(MovieQuery.CONTENT_URI, null);
+                DatabaseDumper.dumpTables(databaseHelper);
                 return ContentUris.withAppendedId(FavoriteTable.CONTENT_URI, favoritesId);
             default:
                 return null;
         }
     }
+
 
     @Override
     public int update(

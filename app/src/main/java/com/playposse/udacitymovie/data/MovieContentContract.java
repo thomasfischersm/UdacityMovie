@@ -252,6 +252,7 @@ public class MovieContentContract {
      * it.
      */
     public static final class MovieQuery implements BaseColumns {
+
         public static final String PATH = "moviequery";
         public static final Uri CONTENT_URI = createContentUri(PATH);
 
@@ -265,5 +266,23 @@ public class MovieContentContract {
                         "left join favorite " +
                         "on movie._id=favorite.movie_id " +
                         "where movie._id=?";
+    }
+
+
+    /**
+     * A query returns all the favorite movies.
+     */
+    public static final class FavoriteQuery implements BaseColumns {
+
+        public static final String PATH = "favoritequery";
+        public static final Uri CONTENT_URI = createContentUri(PATH);
+
+        public static final String[] COLUMN_NAMES = MovieTable.COLUMN_NAMES;
+
+        static final String SQL_QUERY =
+                "select movie.* " +
+                        "from movie " +
+                        "join favorite " +
+                        "on movie._id=favorite.movie_id";
     }
 }

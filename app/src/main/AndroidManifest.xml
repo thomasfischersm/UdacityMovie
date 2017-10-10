@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.playposse.udacitymovie">
+          package="com.playposse.udacitymovie">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name=".UdacityMovieApplication"
@@ -16,21 +16,22 @@
         <provider
             android:name=".data.MovieContentProvider"
             android:authorities="com.playposse.udacitymovie.provider"
-            android:exported="false" />
+            android:exported="false"/>
 
         <service
             android:name=".service.BuildMovieCacheService"
-            android:exported="false" />
+            android:exported="false"/>
 
         <activity android:name=".activity.DiscoverActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.MovieActivity" />
+        <activity android:name=".activity.MovieActivity"/>
+        <activity android:name=".activity.FavoriteActivity"/>
     </application>
 
 </manifest>

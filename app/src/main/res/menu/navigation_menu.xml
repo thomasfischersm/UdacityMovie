@@ -23,7 +23,7 @@
             <menu>
                 <item
                     android:icon="@drawable/ic_favorite_black_24dp"
-                    android:id="@+id/send_feedback_menu_item"
+                    android:id="@+id/favorite_menu_item"
                     android:title="@string/my_favorites_navigation"/>
             </menu>
         </item>
