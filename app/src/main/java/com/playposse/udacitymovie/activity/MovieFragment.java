@@ -126,6 +126,8 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
             Glide.with(this)
                     .load(posterUrl)
                     .into(posterImageView);
+
+            getActivity().setTitle(title);
         }
     }
 

@@ -75,6 +75,7 @@
                     android:id="@+id/overview_text_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
                     app:layout_columnSpan="2"/>
 
                 <TextView

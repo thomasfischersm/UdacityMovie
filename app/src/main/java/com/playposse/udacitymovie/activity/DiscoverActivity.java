@@ -1,16 +1,8 @@
 package com.playposse.udacitymovie.activity;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.playposse.udacitymovie.R;
-import com.playposse.udacitymovie.Secrets;
-
-import info.movito.themoviedbapi.TmdbApi;
-import info.movito.themoviedbapi.model.Discover;
-import info.movito.themoviedbapi.model.MovieDb;
-import info.movito.themoviedbapi.model.Video;
-import info.movito.themoviedbapi.model.core.MovieResultsPage;
 
 public class DiscoverActivity extends ParentActivity {
 
@@ -50,25 +42,5 @@ public class DiscoverActivity extends ParentActivity {
 
         DiscoveryCategory discoveryCategory = ActivityNavigator.getDiscoveryCategory(getIntent());
         addMainFragment(DiscoverFragment.newInstance(discoveryCategory));
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                TmdbApi tmdbApi = new TmdbApi(Secrets.getMovieApiKeyV3());
-                Discover discover = new Discover();
-                discover.sortBy("popularity.desc");
-
-                MovieResultsPage resultsPage = tmdbApi.getDiscover().getDiscover(discover);
-
-                for (MovieDb movie : resultsPage.getResults() ) {
-                    Log.i(LOG_TAG, "onCreate: Movie is: " + movie.getId() + " " + movie.getImdbID() + " " + movie.getTitle() + " " + " " + movie.getOverview());
-                    if (movie.getVideos() != null) {
-                        for (Video video : movie.getVideos()) {
-                            Log.i(LOG_TAG, "run: Video: " + video.getSite() + " " + video.getType() + " " + video.getKey());
-                        }
-                    }
-                }
-            }
-        }).start();
     }
 }
