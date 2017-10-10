@@ -46,4 +46,16 @@ final class ActivityNavigator {
 
         throw new IllegalStateException("Failed to find discover category: " + menuResId);
     }
+
+    static void startMovieActivity(Context context, long movieId) {
+        Intent intent = new Intent(context, MovieActivity.class);
+        intent.putExtra(
+                MovieActivity.MOVIE_ID_EXTRA_CONSTANT,
+                movieId);
+        context.startActivity(intent);
+    }
+
+    static long getMovieId(Intent intent) {
+        return intent.getLongExtra(MovieActivity.MOVIE_ID_EXTRA_CONSTANT, -1);
+    }
 }

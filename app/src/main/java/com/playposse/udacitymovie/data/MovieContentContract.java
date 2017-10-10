@@ -5,6 +5,8 @@ import android.provider.BaseColumns;
 
 import com.playposse.udacitymovie.R;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 /**
  * A contract for the {@link MovieContentProvider}.
  */
@@ -40,6 +42,9 @@ public class MovieContentContract {
         public static final String VOTE_AVERAGE_COLUMN = "vote_average";
         public static final String OVERVIEW_COLUMN = "overview";
         public static final String POSTER_PATH_COLUMN = "poster_path";
+        public static final String BACKDROP_PATH_COLUMN = "backdrop_path";
+        public static final String RELEASE_YEAR_COLUMN = "release_year";
+        public static final String RUNTIME_COLUMN = "runtime";
 
         public static final String[] COLUMN_NAMES = new String[]{
                 ID_COLUMN,
@@ -50,7 +55,10 @@ public class MovieContentContract {
                 USER_RATING_COLUMN,
                 VOTE_AVERAGE_COLUMN,
                 OVERVIEW_COLUMN,
-                POSTER_PATH_COLUMN};
+                POSTER_PATH_COLUMN,
+                BACKDROP_PATH_COLUMN,
+                RELEASE_YEAR_COLUMN,
+                RUNTIME_COLUMN};
 
         static final String SQL_CREATE_TABLE =
                 "CREATE TABLE movie "
@@ -62,7 +70,10 @@ public class MovieContentContract {
                         + "user_rating REAL, "
                         + "vote_average REAL, "
                         + "overview TEXT, "
-                        + "poster_path TEXT)";
+                        + "poster_path TEXT, "
+                        + "backdrop_path TEXT, "
+                        + "release_year TEXT, "
+                        + "runtime INTEGER)";
     }
 
     /**
@@ -234,5 +245,25 @@ public class MovieContentContract {
                         + "(_id INTEGER PRIMARY KEY, "
                         + "movie_id INTEGER, "
                         + "FOREIGN KEY(movie_id) REFERENCES movie(_id))";
+    }
+
+    /**
+     * A query that combines all the movie data. Right now the use is to add the favorites flag to
+     * it.
+     */
+    public static final class MovieQuery implements BaseColumns {
+        public static final String PATH = "moviequery";
+        public static final Uri CONTENT_URI = createContentUri(PATH);
+
+        public static final String IS_FAVORITE_COLUMN = "is_favorite";
+        public static final String[] COLUMN_NAMES =
+                ArrayUtils.addAll(MovieTable.COLUMN_NAMES, IS_FAVORITE_COLUMN);
+
+        static final String SQL_QUERY =
+                "select movie.*, favorite._id not null as is_favorite " +
+                        "from movie " +
+                        "left join favorite " +
+                        "on movie._id=favorite.movie_id " +
+                        "where movie._id=?";
     }
 }

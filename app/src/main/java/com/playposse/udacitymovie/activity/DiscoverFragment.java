@@ -130,6 +130,7 @@ public class DiscoverFragment extends Fragment implements LoaderManager.LoaderCa
         @Override
         protected void onBindViewHolder(MovieViewHolder holder, int position, Cursor cursor) {
             SmartCursor smartCursor = new SmartCursor(cursor, MovieTable.COLUMN_NAMES);
+            final long movieId = smartCursor.getLong(MovieTable.ID_COLUMN);
             String posterPath = smartCursor.getString(MovieTable.POSTER_PATH_COLUMN);
             String posterUrl = MediaUrlBuilder.buildPosterUrl(posterPath);
             String title = smartCursor.getString(MovieTable.TITLE_COLUMN);
@@ -143,6 +144,13 @@ public class DiscoverFragment extends Fragment implements LoaderManager.LoaderCa
             }
             holder.titleTextView.setText(title);
             holder.voteAverageTextView.setText(voteAverageStr);
+
+            holder.posterImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ActivityNavigator.startMovieActivity(getActivity(), movieId);
+                }
+            });
         }
     }
 

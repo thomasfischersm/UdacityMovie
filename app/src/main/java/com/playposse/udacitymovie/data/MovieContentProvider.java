@@ -16,6 +16,7 @@ import com.playposse.udacitymovie.data.MovieContentContract.DiscoverListMovieTab
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryCategoryQuery;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryListTable;
 import com.playposse.udacitymovie.data.MovieContentContract.FavoriteTable;
+import com.playposse.udacitymovie.data.MovieContentContract.MovieQuery;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieReviewTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieVideoTable;
@@ -32,8 +33,9 @@ public class MovieContentProvider extends ContentProvider {
     private static final int DISCOVERY_LIST_MOVIE_TABLE_KEY = 3;
     private static final int MOVIE_REVIEW_TABLE_KEY = 4;
     private static final int MOVIE_VIDEO_TABLE_KEY = 5;
-    private static final int DISCOVERY_CATEGORY_QUERY = 6;
+    private static final int DISCOVERY_CATEGORY_QUERY_KEY = 6;
     private static final int FAVORITE_TABLE_KEY = 7;
+    private static final int MOVIE_QUERY_KEY = 8;
 
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -44,8 +46,9 @@ public class MovieContentProvider extends ContentProvider {
         uriMatcher.addURI(MovieContentContract.AUTHORITY, DiscoverListMovieTable.PATH, DISCOVERY_LIST_MOVIE_TABLE_KEY);
         uriMatcher.addURI(MovieContentContract.AUTHORITY, MovieReviewTable.PATH, MOVIE_REVIEW_TABLE_KEY);
         uriMatcher.addURI(MovieContentContract.AUTHORITY, MovieVideoTable.PATH, MOVIE_VIDEO_TABLE_KEY);
-        uriMatcher.addURI(MovieContentContract.AUTHORITY, DiscoveryCategoryQuery.PATH, DISCOVERY_CATEGORY_QUERY);
+        uriMatcher.addURI(MovieContentContract.AUTHORITY, DiscoveryCategoryQuery.PATH, DISCOVERY_CATEGORY_QUERY_KEY);
         uriMatcher.addURI(MovieContentContract.AUTHORITY, FavoriteTable.PATH, FAVORITE_TABLE_KEY);
+        uriMatcher.addURI(MovieContentContract.AUTHORITY, MovieQuery.PATH, MOVIE_QUERY_KEY);
     }
 
     private MovieDatabaseHelper databaseHelper;
@@ -96,7 +99,7 @@ public class MovieContentProvider extends ContentProvider {
                 tableName = FavoriteTable.TABLE_NAME;
                 notificationUri = FavoriteTable.CONTENT_URI;
                 break;
-            case DISCOVERY_CATEGORY_QUERY:
+            case DISCOVERY_CATEGORY_QUERY_KEY:
                 // Expects the selectionArgs to be the ui_label_res_id.
                 Cursor discoveryCursor =
                         database.rawQuery(DiscoveryCategoryQuery.SQL_QUERY, selectionArgs);
@@ -104,6 +107,14 @@ public class MovieContentProvider extends ContentProvider {
                         contentResolver,
                         DiscoveryCategoryQuery.CONTENT_URI);
                 return discoveryCursor;
+            case MOVIE_QUERY_KEY:
+                // Expects the selectionArgs to be the movie_id.
+                Cursor movieCursor =
+                        database.rawQuery(MovieQuery.SQL_QUERY, selectionArgs);
+                movieCursor.setNotificationUri(
+                        contentResolver,
+                        MovieQuery.CONTENT_URI);
+                return movieCursor;
             default:
                 return null;
         }
@@ -145,6 +156,7 @@ public class MovieContentProvider extends ContentProvider {
                 long movieId = database.insert(MovieTable.TABLE_NAME, null, values);
                 contentResolver.notifyChange(MovieTable.CONTENT_URI, null);
                 contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
+                contentResolver.notifyChange(MovieQuery.CONTENT_URI, null);
                 return ContentUris.withAppendedId(MovieTable.CONTENT_URI, movieId);
             case DISCOVERY_LIST_TABLE_KEY:
                 long discoveryListId = database.insert(DiscoveryListTable.TABLE_NAME, null, values);
@@ -169,6 +181,7 @@ public class MovieContentProvider extends ContentProvider {
                 contentResolver.notifyChange(FavoriteTable.CONTENT_URI, null);
                 contentResolver.notifyChange(MovieTable.CONTENT_URI, null);
                 contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
+                contentResolver.notifyChange(MovieQuery.CONTENT_URI, null);
                 return ContentUris.withAppendedId(FavoriteTable.CONTENT_URI, favoritesId);
             default:
                 return null;
@@ -195,6 +208,7 @@ public class MovieContentProvider extends ContentProvider {
                 count = database.update(MovieTable.TABLE_NAME, values, selection, selectionArgs);
                 contentResolver.notifyChange(MovieTable.CONTENT_URI, null);
                 contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
+                contentResolver.notifyChange(MovieQuery.CONTENT_URI, null);
                 break;
             case DISCOVERY_LIST_TABLE_KEY:
                 count = database.update(
@@ -239,6 +253,7 @@ public class MovieContentProvider extends ContentProvider {
                 contentResolver.notifyChange(FavoriteTable.CONTENT_URI, null);
                 contentResolver.notifyChange(MovieTable.CONTENT_URI, null);
                 contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
+                contentResolver.notifyChange(MovieQuery.CONTENT_URI, null);
                 break;
             default:
                 return 0;
@@ -267,6 +282,7 @@ public class MovieContentProvider extends ContentProvider {
                 count = database.delete(MovieTable.TABLE_NAME, selection, selectionArgs);
                 contentResolver.notifyChange(MovieTable.CONTENT_URI, null);
                 contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
+                contentResolver.notifyChange(MovieQuery.CONTENT_URI, null);
                 break;
             case DISCOVERY_LIST_TABLE_KEY:
                 count = database.delete(DiscoveryListTable.TABLE_NAME, selection, selectionArgs);
@@ -294,6 +310,7 @@ public class MovieContentProvider extends ContentProvider {
                 contentResolver.notifyChange(FavoriteTable.CONTENT_URI, null);
                 contentResolver.notifyChange(MovieTable.CONTENT_URI, null);
                 contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
+                contentResolver.notifyChange(MovieQuery.CONTENT_URI, null);
                 break;
             default:
                 return 0;

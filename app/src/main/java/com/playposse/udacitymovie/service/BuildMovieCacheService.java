@@ -107,6 +107,14 @@ public class BuildMovieCacheService extends IntentService {
         values.put(MovieTable.VOTE_AVERAGE_COLUMN, movie.getVoteAverage());
         values.put(MovieTable.OVERVIEW_COLUMN, movie.getOverview());
         values.put(MovieTable.POSTER_PATH_COLUMN, movie.getPosterPath());
+        values.put(MovieTable.BACKDROP_PATH_COLUMN, movie.getBackdropPath());
+        values.put(MovieTable.RUNTIME_COLUMN, movie.getRuntime());
+
+        String releaseDate = movie.getReleaseDate();
+        if ((releaseDate != null) && (releaseDate.length() >= 4)) {
+            String releaseYear = releaseDate.substring(0, 4);
+            values.put(MovieTable.RELEASE_YEAR_COLUMN, releaseYear);
+        }
 
         if (hasExtendedInfo) {
             values.put(MovieTable.HAS_EXTENDED_INFO_COLUMN, true);
