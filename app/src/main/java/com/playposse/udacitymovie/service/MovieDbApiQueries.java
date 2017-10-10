@@ -16,6 +16,8 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage;
  */
 final class MovieDbApiQueries {
 
+    public static final String LANGUAGE = "en";
+
     private MovieDbApiQueries() {
     }
 
@@ -34,7 +36,7 @@ final class MovieDbApiQueries {
         TmdbMovies movies = getTmdbApi().getMovies();
         return movies.getMovie(
                 (int) movieId,
-                "en",
+                LANGUAGE,
                 MovieMethod.credits,
                 MovieMethod.images,
                 MovieMethod.keywords,
