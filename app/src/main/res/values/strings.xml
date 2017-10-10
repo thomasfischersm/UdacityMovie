@@ -11,6 +11,6 @@
     <string name="drawer_open">Navigation drawer opens</string>
     <string name="drawer_close">Navigation drawer closes</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment33323</string>
+    <!-- Discovery activity -->
+    <string name="poster_content_description">Movie poster</string>
 </resources>

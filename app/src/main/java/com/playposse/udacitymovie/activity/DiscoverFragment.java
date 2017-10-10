@@ -13,11 +13,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.playposse.udacitymovie.R;
 import com.playposse.udacitymovie.activity.DiscoverActivity.DiscoveryCategory;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryCategoryQuery;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieTable;
+import com.playposse.udacitymovie.util.MediaUrlBuilder;
 import com.playposse.udacitymovie.util.RecyclerViewCursorAdapter;
 import com.playposse.udacitymovie.util.SmartCursor;
 
@@ -126,15 +130,26 @@ public class DiscoverFragment extends Fragment implements LoaderManager.LoaderCa
         @Override
         protected void onBindViewHolder(MovieViewHolder holder, int position, Cursor cursor) {
             SmartCursor smartCursor = new SmartCursor(cursor, MovieTable.COLUMN_NAMES);
+            String posterPath = smartCursor.getString(MovieTable.POSTER_PATH_COLUMN);
+            String posterUrl = MediaUrlBuilder.buildPosterUrl(posterPath);
+            String title = smartCursor.getString(MovieTable.TITLE_COLUMN);
+
+            Glide.with(getActivity())
+                    .load(posterUrl)
+                    .into(holder.posterImageView);
+            holder.titleTextView.setText(title);
         }
     }
 
     /**
      * A {@link RecyclerView.ViewHolder} for a movie tile.
      */
-    private class MovieViewHolder extends RecyclerView.ViewHolder {
+    class MovieViewHolder extends RecyclerView.ViewHolder {
 
-        public MovieViewHolder(View itemView) {
+        @BindView(R.id.poster_image_view) ImageView posterImageView;
+        @BindView(R.id.title_text_view) TextView titleTextView;
+
+        private MovieViewHolder(View itemView) {
             super(itemView);
 
             ButterKnife.bind(this, itemView);
