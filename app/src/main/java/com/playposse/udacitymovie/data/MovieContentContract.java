@@ -32,6 +32,7 @@ public class MovieContentContract {
         public static final String TABLE_NAME = "movie";
 
         public static final String ID_COLUMN = _ID;
+        public static final String HAS_EXTENDED_INFO_COLUMN = "has_extended_info";
         public static final String IMDB_ID_COLUMN = "imdb_id";
         public static final String TITLE_COLUMN = "title";
         public static final String TAGLINE_COLUMN = "tagline";
@@ -42,6 +43,7 @@ public class MovieContentContract {
 
         public static final String[] COLUMN_NAMES = new String[]{
                 ID_COLUMN,
+                HAS_EXTENDED_INFO_COLUMN,
                 IMDB_ID_COLUMN,
                 TITLE_COLUMN,
                 TAGLINE_COLUMN,
@@ -53,6 +55,7 @@ public class MovieContentContract {
         static final String SQL_CREATE_TABLE =
                 "CREATE TABLE movie "
                         + "(_id INTEGER PRIMARY KEY, "
+                        + "has_extended_info INTEGER DEFAULT 0, "
                         + "imdb_id TEXT, "
                         + "title TEXT, "
                         + "tagline TEXT, "
@@ -123,5 +126,69 @@ public class MovieContentContract {
                         + "movie_id INTEGER," +
                         "FOREIGN KEY(discover_list_id) REFERENCES discovery_list(_id)," +
                         "FOREIGN KEY(movie_id) REFERENCES movie(_id))";
+    }
+
+    /**
+     * Stores the movie reviews.
+     */
+    public static final class MovieReviewTable implements BaseColumns {
+
+        public static final String PATH = "moviereview";
+        public static final Uri CONTENT_URI = createContentUri(PATH);
+        public static final String TABLE_NAME = "movie_review";
+
+        public static final String ID_COLUMN = _ID;
+        public static final String MOVIE_ID_COLUMN = "movie_id";
+        public static final String AUTHOR_COLUMN = "author";
+        public static final String CONTENT_COLUMN = "content";
+        public static final String URL_COLUMN = "url";
+
+        public static final String[] COLUMN_NAMES = new String[]{
+                ID_COLUMN,
+                MOVIE_ID_COLUMN,
+                AUTHOR_COLUMN,
+                CONTENT_COLUMN,
+                URL_COLUMN};
+
+        static final String SQL_CREATE_TABLE =
+                "CREATE TABLE movie_review "
+                        + "(_id INTEGER PRIMARY KEY, "
+                        + "movie_id INTEGER, "
+                        + "author TEXT, "
+                        + "content TEXT, "
+                        + "url TEXT, "
+                        + "FOREIGN KEY(movie_id) REFERENCES movie(_id))";
+    }
+
+    /**
+     * Stores the movie videos.
+     */
+    public static final class MovieVideoTable implements BaseColumns {
+
+        public static final String PATH = "movievideo";
+        public static final Uri CONTENT_URI = createContentUri(PATH);
+        public static final String TABLE_NAME = "movie_video";
+
+        public static final String ID_COLUMN = _ID;
+        public static final String MOVIE_ID_COLUMN = "movie_id";
+        public static final String SITE_COLUMN = "site";
+        public static final String KEY_COLUMN = "key";
+        public static final String TYPE_COLUMN = "type";
+
+        public static final String[] COLUMN_NAMES = new String[]{
+                ID_COLUMN,
+                MOVIE_ID_COLUMN,
+                SITE_COLUMN,
+                KEY_COLUMN,
+                TYPE_COLUMN};
+
+        static final String SQL_CREATE_TABLE =
+                "CREATE TABLE movie_video "
+                        + "(_id INTEGER PRIMARY KEY, "
+                        + "movie_id INTEGER, "
+                        + "site TEXT, "
+                        + "key TEXT, "
+                        + "type TEXT, "
+                        + "FOREIGN KEY(movie_id) REFERENCES movie(_id))";
     }
 }

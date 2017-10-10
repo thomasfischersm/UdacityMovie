@@ -14,7 +14,9 @@ import android.util.Log;
 
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoverListMovieTable;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryListTable;
+import com.playposse.udacitymovie.data.MovieContentContract.MovieReviewTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieTable;
+import com.playposse.udacitymovie.data.MovieContentContract.MovieVideoTable;
 
 /**
  * A {@link ContentProvider} that stores the movie information from the Movie Database locally.
@@ -26,6 +28,8 @@ public class MovieContentProvider extends ContentProvider {
     private static final int MOVIE_TABLE_KEY = 1;
     private static final int DISCOVERY_LIST_TABLE_KEY = 2;
     private static final int DISCOVERY_LIST_MOVIE_TABLE_KEY = 3;
+    private static final int MOVIE_REVIEW_TABLE_KEY = 4;
+    private static final int MOVIE_VIDEO_TABLE_KEY = 5;
 
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -34,6 +38,8 @@ public class MovieContentProvider extends ContentProvider {
         uriMatcher.addURI(MovieContentContract.AUTHORITY, MovieTable.PATH, MOVIE_TABLE_KEY);
         uriMatcher.addURI(MovieContentContract.AUTHORITY, DiscoveryListTable.PATH, DISCOVERY_LIST_TABLE_KEY);
         uriMatcher.addURI(MovieContentContract.AUTHORITY, DiscoverListMovieTable.PATH, DISCOVERY_LIST_MOVIE_TABLE_KEY);
+        uriMatcher.addURI(MovieContentContract.AUTHORITY, MovieReviewTable.PATH, MOVIE_REVIEW_TABLE_KEY);
+        uriMatcher.addURI(MovieContentContract.AUTHORITY, MovieVideoTable.PATH, MOVIE_VIDEO_TABLE_KEY);
     }
 
     private MovieDatabaseHelper databaseHelper;
@@ -71,6 +77,14 @@ public class MovieContentProvider extends ContentProvider {
             case DISCOVERY_LIST_MOVIE_TABLE_KEY:
                 tableName = DiscoverListMovieTable.TABLE_NAME;
                 notificationUri = DiscoverListMovieTable.CONTENT_URI;
+                break;
+            case MOVIE_REVIEW_TABLE_KEY:
+                tableName = MovieReviewTable.TABLE_NAME;
+                notificationUri = MovieReviewTable.CONTENT_URI;
+                break;
+            case MOVIE_VIDEO_TABLE_KEY:
+                tableName = MovieVideoTable.TABLE_NAME;
+                notificationUri = MovieVideoTable.CONTENT_URI;
                 break;
             default:
                 return null;
@@ -121,6 +135,14 @@ public class MovieContentProvider extends ContentProvider {
                 long linkId = database.insert(DiscoverListMovieTable.TABLE_NAME, null, values);
                 contentResolver.notifyChange(DiscoverListMovieTable.CONTENT_URI, null);
                 return ContentUris.withAppendedId(DiscoverListMovieTable.CONTENT_URI, linkId);
+            case MOVIE_REVIEW_TABLE_KEY:
+                long reviewId = database.insert(MovieReviewTable.TABLE_NAME, null, values);
+                contentResolver.notifyChange(MovieReviewTable.CONTENT_URI, null);
+                return ContentUris.withAppendedId(MovieReviewTable.CONTENT_URI, reviewId);
+            case MOVIE_VIDEO_TABLE_KEY:
+                long videoId = database.insert(MovieVideoTable.TABLE_NAME, null, values);
+                contentResolver.notifyChange(MovieVideoTable.CONTENT_URI, null);
+                return ContentUris.withAppendedId(MovieVideoTable.CONTENT_URI, videoId);
             default:
                 return null;
         }
@@ -162,6 +184,22 @@ public class MovieContentProvider extends ContentProvider {
                         selectionArgs);
                 contentResolver.notifyChange(DiscoverListMovieTable.CONTENT_URI, null);
                 break;
+            case MOVIE_REVIEW_TABLE_KEY:
+                count = database.update(
+                        MovieReviewTable.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs);
+                contentResolver.notifyChange(MovieReviewTable.CONTENT_URI, null);
+                break;
+            case MOVIE_VIDEO_TABLE_KEY:
+                count = database.update(
+                        MovieVideoTable.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs);
+                contentResolver.notifyChange(MovieVideoTable.CONTENT_URI, null);
+                break;
             default:
                 return 0;
         }
@@ -199,6 +237,14 @@ public class MovieContentProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 contentResolver.notifyChange(DiscoverListMovieTable.CONTENT_URI, null);
+                break;
+            case MOVIE_REVIEW_TABLE_KEY:
+                count = database.delete(MovieReviewTable.TABLE_NAME, selection, selectionArgs);
+                contentResolver.notifyChange(MovieReviewTable.CONTENT_URI, null);
+                break;
+            case MOVIE_VIDEO_TABLE_KEY:
+                count = database.delete(MovieVideoTable.TABLE_NAME, selection, selectionArgs);
+                contentResolver.notifyChange(MovieVideoTable.CONTENT_URI, null);
                 break;
             default:
                 return 0;

@@ -6,7 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoverListMovieTable;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryListTable;
+import com.playposse.udacitymovie.data.MovieContentContract.MovieReviewTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieTable;
+import com.playposse.udacitymovie.data.MovieContentContract.MovieVideoTable;
 import com.playposse.udacitymovie.util.DbUtil;
 
 /**
@@ -27,6 +29,8 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(MovieTable.SQL_CREATE_TABLE);
         db.execSQL(DiscoveryListTable.SQL_CREATE_TABLE);
         db.execSQL(DiscoverListMovieTable.SQL_CREATE_TABLE);
+        db.execSQL(MovieReviewTable.SQL_CREATE_TABLE);
+        db.execSQL(MovieVideoTable.SQL_CREATE_TABLE);
 
         DbUtil.executeMultipleSql(db, DiscoveryListTable.SQL_CREATE_DATA);
     }

@@ -8,7 +8,9 @@ import android.util.Log;
 
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoverListMovieTable;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryListTable;
+import com.playposse.udacitymovie.data.MovieContentContract.MovieReviewTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieTable;
+import com.playposse.udacitymovie.data.MovieContentContract.MovieVideoTable;
 
 /**
  * A utility for querying the content repository.
@@ -101,5 +103,46 @@ public final class ContentProviderQueries {
                 values,
                 MovieTable.ID_COLUMN + "=?",
                 new String[]{Long.toString(movieId)});
+    }
+
+    public static int deleteMovieReviews(Context context, long movieId) {
+        ContentResolver contentResolver = context.getContentResolver();
+
+        return contentResolver.delete(
+                MovieReviewTable.CONTENT_URI,
+                MovieReviewTable.MOVIE_ID_COLUMN + "=?",
+                new String[]{Long.toString(movieId)});
+    }
+
+    public static void insertMovieReview(Context context, ContentValues values) {
+        ContentResolver contentResolver = context.getContentResolver();
+
+        contentResolver.insert(MovieReviewTable.CONTENT_URI, values);
+    }
+
+    public static int deleteMovieVideos(Context context, long movieId) {
+        ContentResolver contentResolver = context.getContentResolver();
+
+        return contentResolver.delete(
+                MovieVideoTable.CONTENT_URI,
+                MovieVideoTable.MOVIE_ID_COLUMN + "=?",
+                new String[]{Long.toString(movieId)});
+    }
+
+    public static void insertMovieVideo(Context context, ContentValues values) {
+        ContentResolver contentResolver = context.getContentResolver();
+
+        contentResolver.insert(MovieVideoTable.CONTENT_URI, values);
+    }
+
+    public static Cursor getMoviesWithoutExtendedInfo(Context context) {
+        ContentResolver contentResolver = context.getContentResolver();
+
+        return contentResolver.query(
+                MovieTable.CONTENT_URI,
+                MovieTable.COLUMN_NAMES,
+                "has_extended_info = 0",
+                null,
+                null);
     }
 }

@@ -11,12 +11,19 @@ import android.util.Log;
 
 import com.playposse.udacitymovie.data.ContentProviderQueries;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryListTable;
+import com.playposse.udacitymovie.data.MovieContentContract.MovieReviewTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieTable;
+import com.playposse.udacitymovie.data.MovieContentContract.MovieVideoTable;
 import com.playposse.udacitymovie.data.MovieDatabaseHelper;
 import com.playposse.udacitymovie.util.DatabaseDumper;
 import com.playposse.udacitymovie.util.SmartCursor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import info.movito.themoviedbapi.model.MovieDb;
+import info.movito.themoviedbapi.model.Reviews;
+import info.movito.themoviedbapi.model.Video;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
 
 /**
@@ -36,7 +43,8 @@ public class BuildMovieCacheService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         long start = System.currentTimeMillis();
         Context context = getApplicationContext();
-        queryAllDiscoveryLists(context);
+        queryAllDiscoveryLists();
+        queryExtendedMovieInfo();
 
         long end = System.currentTimeMillis();
         Log.i(LOG_TAG, "onHandleIntent: Fetching movie data took " + (end - start) + "ms.");
@@ -44,7 +52,8 @@ public class BuildMovieCacheService extends IntentService {
         DatabaseDumper.dumpTables(new MovieDatabaseHelper(context));
     }
 
-    private void queryAllDiscoveryLists(Context context) {
+    private void queryAllDiscoveryLists() {
+        Context context = getApplicationContext();
         Cursor discoveryLists = ContentProviderQueries.getDiscoveryLists(context);
         SmartCursor smartCursor = new SmartCursor(discoveryLists, DiscoveryListTable.COLUMN_NAMES);
 
@@ -81,13 +90,13 @@ public class BuildMovieCacheService extends IntentService {
                     movieId);
 
             // Update or insert the movie data.
-            insertOrUpdateMovie(movie);
+            insertOrUpdateMovie(movie, false);
         }
     }
 
-    private void insertOrUpdateMovie(MovieDb movie) {
-        int movieId = movie.getId();
+    private void insertOrUpdateMovie(MovieDb movie, boolean hasExtendedInfo) {
         Context context = getApplicationContext();
+        int movieId = movie.getId();
 
         ContentValues values = new ContentValues();
         values.put(MovieTable.ID_COLUMN, movieId);
@@ -99,10 +108,93 @@ public class BuildMovieCacheService extends IntentService {
         values.put(MovieTable.OVERVIEW_COLUMN, movie.getOverview());
         values.put(MovieTable.POSTER_PATH_COLUMN, movie.getPosterPath());
 
+        if (hasExtendedInfo) {
+            values.put(MovieTable.HAS_EXTENDED_INFO_COLUMN, true);
+        }
+
+        // Clear empty fields if the query has no extended info. The null values could overwrite
+        // extended info from a previous query.
+        if (!hasExtendedInfo) {
+            // Prevent concurrent modification exception.
+            List<String> keys = new ArrayList<>(values.keySet());
+            for (String key : keys) {
+                if (values.get(key) == null) {
+                    values.remove(key);
+                }
+            }
+        }
+
         if (ContentProviderQueries.doesMovieExist(context, movieId)) {
             ContentProviderQueries.updateMovie(context, movieId, values);
         } else {
             ContentProviderQueries.insertMovie(context, values);
         }
+
+        if (hasExtendedInfo) {
+            recreateMovieReviews(movie);
+            recreateMovieVideos(movie);
+        }
+    }
+
+    private void recreateMovieReviews(MovieDb movie) {
+        Context context = getApplicationContext();
+        int movieId = movie.getId();
+
+        // Delete movie reviews.
+        ContentProviderQueries.deleteMovieReviews(context, movieId);
+
+        // Re-insert movie reviews.
+        if (movie.getReviews() != null) {
+            for (Reviews review : movie.getReviews()) {
+                ContentValues values = new ContentValues();
+                values.put(MovieReviewTable.MOVIE_ID_COLUMN, movieId);
+                values.put(MovieReviewTable.AUTHOR_COLUMN, review.getAuthor());
+                values.put(MovieReviewTable.CONTENT_COLUMN, review.getContent());
+                values.put(MovieReviewTable.URL_COLUMN, review.getUrl());
+
+                ContentProviderQueries.insertMovieReview(context, values);
+            }
+        }
+    }
+
+    private void recreateMovieVideos(MovieDb movie) {
+        Context context = getApplicationContext();
+        int movieId = movie.getId();
+
+        // Delete movie reviews.
+        ContentProviderQueries.deleteMovieVideos(context, movieId);
+
+        // Re-insert movie reviews.
+        if (movie.getReviews() != null) {
+            for (Video video : movie.getVideos()) {
+                ContentValues values = new ContentValues();
+                values.put(MovieVideoTable.MOVIE_ID_COLUMN, movieId);
+                values.put(MovieVideoTable.TYPE_COLUMN, video.getType());
+                values.put(MovieVideoTable.KEY_COLUMN, video.getKey());
+                values.put(MovieVideoTable.SITE_COLUMN, video.getSite());
+
+                ContentProviderQueries.insertMovieVideo(context, values);
+            }
+        }
+    }
+
+    private void queryExtendedMovieInfo() {
+        Context context = getApplicationContext();
+
+        Cursor cursor = ContentProviderQueries.getMoviesWithoutExtendedInfo(context);
+        SmartCursor smartCursor = new SmartCursor(cursor, MovieTable.COLUMN_NAMES);
+        int count = cursor.getCount();
+
+        try {
+            while (cursor.moveToNext()) {
+                long movieId = smartCursor.getLong(MovieTable.ID_COLUMN);
+                MovieDb movie = MovieDbApiQueries.getExtendedMovieInfo(movieId);
+                insertOrUpdateMovie(movie, true);
+            }
+        } finally {
+            cursor.close();
+        }
+
+        Log.i(LOG_TAG, "queryExtendedMovieInfo: Got extended movie info for " + count + " movies.");
     }
 }
