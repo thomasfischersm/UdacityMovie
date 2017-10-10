@@ -9,13 +9,11 @@ import com.playposse.udacitymovie.activity.DiscoverActivity.DiscoveryCategory;
 /**
  * A utility that helps navigating between activities.
  */
-public final class ActivityNavigator {
-
-    private static final String LOG_TAG = ActivityNavigator.class.getSimpleName();
+final class ActivityNavigator {
 
     private ActivityNavigator() {}
 
-    public static void startDiscoverActivity(Context context, int menuResId) {
+    static void startDiscoverActivity(Context context, int menuResId) {
         startDiscoverActivity(context, getDiscoveryCategory(menuResId));
     }
 
@@ -30,7 +28,7 @@ public final class ActivityNavigator {
         context.startActivity(intent);
     }
 
-    public static DiscoveryCategory getDiscoveryCategory(Intent intent) {
+    static DiscoveryCategory getDiscoveryCategory(Intent intent) {
         int menuResId = intent.getIntExtra(
                 DiscoverActivity.DISCOVER_CATEGORY_EXTRA_CONSTANT,
                 DiscoverActivity.DEFAULT_CATEGORY);
@@ -39,7 +37,7 @@ public final class ActivityNavigator {
     }
 
     @NonNull
-    public static DiscoveryCategory getDiscoveryCategory(int menuResId) {
+    static DiscoveryCategory getDiscoveryCategory(int menuResId) {
         for (DiscoveryCategory category : DiscoveryCategory.values()) {
             if (category.getMenuResId() == menuResId) {
                 return category;

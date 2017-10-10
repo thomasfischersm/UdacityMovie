@@ -13,4 +13,5 @@
 
     <!-- Discovery activity -->
     <string name="poster_content_description">Movie poster</string>
+    <string name="average_vote_format">%1$.1f</string>
 </resources>

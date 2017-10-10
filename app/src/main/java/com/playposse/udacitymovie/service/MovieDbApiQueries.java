@@ -16,7 +16,7 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage;
  */
 final class MovieDbApiQueries {
 
-    public static final String LANGUAGE = "en";
+    private static final String LANGUAGE = "en";
 
     private MovieDbApiQueries() {
     }

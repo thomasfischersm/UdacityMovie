@@ -134,7 +134,7 @@ public class DiscoverFragment extends Fragment implements LoaderManager.LoaderCa
             String posterUrl = MediaUrlBuilder.buildPosterUrl(posterPath);
             String title = smartCursor.getString(MovieTable.TITLE_COLUMN);
             Double voteAverage = smartCursor.getDouble(MovieTable.VOTE_AVERAGE_COLUMN);
-            String voteAverageStr = String.format("%.1f", voteAverage);
+            String voteAverageStr = getString(R.string.average_vote_format, voteAverage);
 
             Glide.with(getActivity())
                     .load(posterUrl)
