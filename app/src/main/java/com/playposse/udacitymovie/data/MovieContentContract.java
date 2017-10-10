@@ -202,11 +202,37 @@ public class MovieContentContract {
         public static final String[] COLUMN_NAMES = MovieTable.COLUMN_NAMES;
 
         static final String SQL_QUERY =
-                "select movie.* from discovery_list " +
+                "select movie.*, favorite._id not null as is_favorite " +
+                        "from discovery_list " +
                         "join discovery_list_movie " +
                         "on discovery_list._id=discovery_list_movie.discovery_list_id " +
                         "join movie " +
                         "on discovery_list_movie.movie_id=movie._id " +
+                        "left join favorite " +
+                        "on movie._id=favorite.movie_id " +
                         "where discovery_list.ui_label_res_id=?";
+    }
+
+    /**
+     * Stores the favorite movies of the user.
+     */
+    public static final class FavoriteTable implements BaseColumns {
+
+        public static final String PATH = "favorite";
+        public static final Uri CONTENT_URI = createContentUri(PATH);
+        public static final String TABLE_NAME = "favorite";
+
+        public static final String ID_COLUMN = _ID;
+        public static final String MOVIE_ID_COLUMN = "movie_id";
+
+        public static final String[] COLUMN_NAMES = new String[]{
+                ID_COLUMN,
+                MOVIE_ID_COLUMN};
+
+        static final String SQL_CREATE_TABLE =
+                "CREATE TABLE favorite "
+                        + "(_id INTEGER PRIMARY KEY, "
+                        + "movie_id INTEGER, "
+                        + "FOREIGN KEY(movie_id) REFERENCES movie(_id))";
     }
 }

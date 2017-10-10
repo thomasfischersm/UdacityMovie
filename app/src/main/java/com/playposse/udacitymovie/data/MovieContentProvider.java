@@ -15,6 +15,7 @@ import android.util.Log;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoverListMovieTable;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryCategoryQuery;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryListTable;
+import com.playposse.udacitymovie.data.MovieContentContract.FavoriteTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieReviewTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieVideoTable;
@@ -32,6 +33,7 @@ public class MovieContentProvider extends ContentProvider {
     private static final int MOVIE_REVIEW_TABLE_KEY = 4;
     private static final int MOVIE_VIDEO_TABLE_KEY = 5;
     private static final int DISCOVERY_CATEGORY_QUERY = 6;
+    private static final int FAVORITE_TABLE_KEY = 7;
 
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -43,6 +45,7 @@ public class MovieContentProvider extends ContentProvider {
         uriMatcher.addURI(MovieContentContract.AUTHORITY, MovieReviewTable.PATH, MOVIE_REVIEW_TABLE_KEY);
         uriMatcher.addURI(MovieContentContract.AUTHORITY, MovieVideoTable.PATH, MOVIE_VIDEO_TABLE_KEY);
         uriMatcher.addURI(MovieContentContract.AUTHORITY, DiscoveryCategoryQuery.PATH, DISCOVERY_CATEGORY_QUERY);
+        uriMatcher.addURI(MovieContentContract.AUTHORITY, FavoriteTable.PATH, FAVORITE_TABLE_KEY);
     }
 
     private MovieDatabaseHelper databaseHelper;
@@ -88,6 +91,10 @@ public class MovieContentProvider extends ContentProvider {
             case MOVIE_VIDEO_TABLE_KEY:
                 tableName = MovieVideoTable.TABLE_NAME;
                 notificationUri = MovieVideoTable.CONTENT_URI;
+                break;
+            case FAVORITE_TABLE_KEY:
+                tableName = FavoriteTable.TABLE_NAME;
+                notificationUri = FavoriteTable.CONTENT_URI;
                 break;
             case DISCOVERY_CATEGORY_QUERY:
                 // Expects the selectionArgs to be the ui_label_res_id.
@@ -157,6 +164,12 @@ public class MovieContentProvider extends ContentProvider {
                 long videoId = database.insert(MovieVideoTable.TABLE_NAME, null, values);
                 contentResolver.notifyChange(MovieVideoTable.CONTENT_URI, null);
                 return ContentUris.withAppendedId(MovieVideoTable.CONTENT_URI, videoId);
+            case FAVORITE_TABLE_KEY:
+                long favoritesId = database.insert(FavoriteTable.TABLE_NAME, null, values);
+                contentResolver.notifyChange(FavoriteTable.CONTENT_URI, null);
+                contentResolver.notifyChange(MovieTable.CONTENT_URI, null);
+                contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
+                return ContentUris.withAppendedId(FavoriteTable.CONTENT_URI, favoritesId);
             default:
                 return null;
         }
@@ -217,6 +230,16 @@ public class MovieContentProvider extends ContentProvider {
                         selectionArgs);
                 contentResolver.notifyChange(MovieVideoTable.CONTENT_URI, null);
                 break;
+            case FAVORITE_TABLE_KEY:
+                count = database.update(
+                        FavoriteTable.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs);
+                contentResolver.notifyChange(FavoriteTable.CONTENT_URI, null);
+                contentResolver.notifyChange(MovieTable.CONTENT_URI, null);
+                contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
+                break;
             default:
                 return 0;
         }
@@ -265,6 +288,12 @@ public class MovieContentProvider extends ContentProvider {
             case MOVIE_VIDEO_TABLE_KEY:
                 count = database.delete(MovieVideoTable.TABLE_NAME, selection, selectionArgs);
                 contentResolver.notifyChange(MovieVideoTable.CONTENT_URI, null);
+                break;
+            case FAVORITE_TABLE_KEY:
+                count = database.delete(FavoriteTable.TABLE_NAME, selection, selectionArgs);
+                contentResolver.notifyChange(FavoriteTable.CONTENT_URI, null);
+                contentResolver.notifyChange(MovieTable.CONTENT_URI, null);
+                contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
                 break;
             default:
                 return 0;
