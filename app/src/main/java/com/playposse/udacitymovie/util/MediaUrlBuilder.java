@@ -7,6 +7,7 @@ public final class MediaUrlBuilder {
 
     private static final String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500";
     private static final String BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280";
+    private static final String YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v=";
 
     private MediaUrlBuilder() {}
 
@@ -20,5 +21,9 @@ public final class MediaUrlBuilder {
         // Note: There is a more sophisticated approach that involves querying the API for the
         // base URL and available poster sizes.
         return BACKDROP_BASE_URL + posterPath;
+    }
+
+    public static String buildYouTubeUrl(String key) {
+        return YOUTUBE_BASE_URL + key;
     }
 }

@@ -112,7 +112,6 @@ public class DiscoverFragment extends Fragment implements LoaderManager.LoaderCa
         movieAdapter.swapCursor(null);
     }
 
-
     /**
      * An adapter that manages a list of movies.
      */

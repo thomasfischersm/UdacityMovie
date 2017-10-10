@@ -2,6 +2,7 @@ package com.playposse.udacitymovie.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.playposse.udacitymovie.activity.DiscoverActivity.DiscoveryCategory;
@@ -57,5 +58,10 @@ final class ActivityNavigator {
 
     static long getMovieId(Intent intent) {
         return intent.getLongExtra(MovieActivity.MOVIE_ID_EXTRA_CONSTANT, -1);
+    }
+
+    static void startYouTubeActivity(Context context, String videoUrl) {
+        Uri videoUri = Uri.parse(videoUrl);
+        context.startActivity(new Intent(Intent.ACTION_VIEW, videoUri));
     }
 }
