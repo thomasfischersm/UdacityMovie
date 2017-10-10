@@ -133,11 +133,14 @@ public class DiscoverFragment extends Fragment implements LoaderManager.LoaderCa
             String posterPath = smartCursor.getString(MovieTable.POSTER_PATH_COLUMN);
             String posterUrl = MediaUrlBuilder.buildPosterUrl(posterPath);
             String title = smartCursor.getString(MovieTable.TITLE_COLUMN);
+            Double voteAverage = smartCursor.getDouble(MovieTable.VOTE_AVERAGE_COLUMN);
+            String voteAverageStr = String.format("%.1f", voteAverage);
 
             Glide.with(getActivity())
                     .load(posterUrl)
                     .into(holder.posterImageView);
             holder.titleTextView.setText(title);
+            holder.voteAverageTextView.setText(voteAverageStr);
         }
     }
 
@@ -148,6 +151,7 @@ public class DiscoverFragment extends Fragment implements LoaderManager.LoaderCa
 
         @BindView(R.id.poster_image_view) ImageView posterImageView;
         @BindView(R.id.title_text_view) TextView titleTextView;
+        @BindView(R.id.vote_average_text_view) TextView voteAverageTextView;
 
         private MovieViewHolder(View itemView) {
             super(itemView);
