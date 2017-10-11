@@ -10,6 +10,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,8 @@ import butterknife.ButterKnife;
  * <p>The fragment looks in the {@link Intent} for the movie id.
  */
 public class MovieFragment extends Fragment {
+
+    private static final String LOG_TAG = MovieFragment.class.getSimpleName();
 
     private static final String MOVIE_ID = "movieId";
     private static final int MOVIE_LOADER_MANAGER_ID = 2;
@@ -74,6 +77,7 @@ public class MovieFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i(LOG_TAG, "onCreate: for Fragment " + MovieFragment.this.hashCode());
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
@@ -86,6 +90,8 @@ public class MovieFragment extends Fragment {
             LayoutInflater inflater,
             ViewGroup container,
             Bundle savedInstanceState) {
+
+        Log.i(LOG_TAG, "onCreateView: for Fragment " + MovieFragment.this.hashCode());
 
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
 
@@ -112,6 +118,8 @@ public class MovieFragment extends Fragment {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+
+        Log.i(LOG_TAG, "onActivityCreated: for Fragment " + MovieFragment.this.hashCode());
         super.onActivityCreated(savedInstanceState);
 
         getLoaderManager().initLoader(MOVIE_LOADER_MANAGER_ID, null, new MovieLoaderCallbacks());
@@ -126,6 +134,7 @@ public class MovieFragment extends Fragment {
 
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            Log.i(LOG_TAG, "onCreateLoader: movieId:" + movieId + " for Fragment " + MovieFragment.this.hashCode());
             return new CursorLoader(
                     getActivity(),
                     MovieQuery.CONTENT_URI,
@@ -137,7 +146,9 @@ public class MovieFragment extends Fragment {
 
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-            if (cursor.moveToNext()) {
+            Log.i(LOG_TAG, "onLoadFinished: for Fragment " + MovieFragment.this.hashCode());
+            if (cursor.moveToFirst()) {
+                Log.i(LOG_TAG, "onLoadFinished: Inside of cursor for Fragment " + MovieFragment.this.hashCode());
                 SmartCursor smartCursor = new SmartCursor(cursor, MovieQuery.COLUMN_NAMES);
 
                 String title = smartCursor.getString(MovieTable.TITLE_COLUMN);

@@ -27,6 +27,10 @@ import butterknife.ButterKnife;
  */
 public abstract class ParentActivity extends AppCompatActivity {
 
+    private static final String LOG_TAG = ParentActivity.class.getSimpleName();
+
+    private static final String MAIN_FRAGMENT_TAG = "mainFragment";
+
     @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
     @BindView(R.id.main_fragment_container) LinearLayout mainFragmentContainer;
     @BindView(R.id.navigation_view) NavigationView navigationView;
@@ -87,10 +91,12 @@ public abstract class ParentActivity extends AppCompatActivity {
 
     protected void addMainFragment(Fragment mainFragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        fragmentTransaction.add(R.id.main_fragment_container, mainFragment);
-        fragmentTransaction.commit();
+        if (fragmentManager.findFragmentByTag(MAIN_FRAGMENT_TAG) == null) {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.main_fragment_container, mainFragment, MAIN_FRAGMENT_TAG);
+            fragmentTransaction.commit();
+        }
     }
 
     @Override

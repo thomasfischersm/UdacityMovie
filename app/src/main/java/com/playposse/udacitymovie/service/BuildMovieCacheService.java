@@ -49,7 +49,9 @@ public class BuildMovieCacheService extends IntentService {
         long end = System.currentTimeMillis();
         Log.i(LOG_TAG, "onHandleIntent: Fetching movie data took " + (end - start) + "ms.");
 
-        DatabaseDumper.dumpTables(new MovieDatabaseHelper(context));
+        MovieDatabaseHelper databaseHelper = new MovieDatabaseHelper(context);
+        DatabaseDumper.dumpTables(databaseHelper);
+        databaseHelper.close();
     }
 
     private void queryAllDiscoveryLists() {
