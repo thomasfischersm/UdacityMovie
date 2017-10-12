@@ -42,7 +42,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center"
-            android:src="@drawable/circle_bg" />
+            android:src="@drawable/dark_circle_bg" />
 
         <TextView
             android:id="@+id/vote_average_text_view"
