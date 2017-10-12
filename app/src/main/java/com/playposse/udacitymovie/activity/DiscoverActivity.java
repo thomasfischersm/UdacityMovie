@@ -8,7 +8,7 @@ public class DiscoverActivity extends ParentActivity {
 
     private static final String LOG_TAG = DiscoverActivity.class.getSimpleName();
 
-    enum DiscoveryCategory {
+    public enum DiscoveryCategory {
         mostPopular(R.string.most_popular_category, R.id.discover_most_popular_menu_item),
         highestRated(R.string.highest_rated_category, R.id.discover_highest_rated_menu_item),
         highestGrossing(

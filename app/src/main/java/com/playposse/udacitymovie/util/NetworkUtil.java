@@ -26,4 +26,17 @@ public final class NetworkUtil {
         NetworkInfo networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         return networkInfo.isConnected();
     }
+
+    public static boolean hasNetwork(Context context) {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager == null) {
+            Log.e(LOG_TAG, "hasNetwork: Got NPE when checking for ConnectivityManager.");
+            return false;
+        }
+
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        return (activeNetwork != null) && (activeNetwork.isConnectedOrConnecting());
+    }
 }

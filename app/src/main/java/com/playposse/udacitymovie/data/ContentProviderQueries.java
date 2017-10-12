@@ -185,4 +185,26 @@ public final class ContentProviderQueries {
                     new String[]{Long.toString(movieId)});
         }
     }
+
+    public static boolean areDiscoveryListsCached(Context context) {
+        ContentResolver contentResolver = context.getContentResolver();
+
+        Cursor cursor = contentResolver.query(
+                DiscoveryListTable.CONTENT_URI,
+                null,
+                "last_retrieved is null",
+                null,
+                null);
+
+        if (cursor == null) {
+            Log.e(LOG_TAG, "areDiscoveryListsCached: The cursor was unexpectedly null!");
+            return false;
+        }
+
+        try {
+            return cursor.getCount() == 0;
+        } finally {
+            cursor.close();
+        }
+    }
 }

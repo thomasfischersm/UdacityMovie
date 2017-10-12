@@ -29,4 +29,7 @@
 
     <!-- Favorite activity -->
     <string name="favorite_activity_title">Your favorites</string>
+
+    <!-- No network connectivity activity -->
+    <string name="network_down">Sadly, your internet appears to be down.</string>
 </resources>

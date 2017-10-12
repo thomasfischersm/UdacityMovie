@@ -75,7 +75,14 @@ public class BuildMovieCacheService extends IntentService {
     }
 
     private void buildCache() {
+        // Check if the cache has already been built.
+        if (ContentProviderQueries.areDiscoveryListsCached(getApplicationContext())) {
+            Log.i(LOG_TAG, "buildCache: Skip cache building because the cache is already built.");
+            return;
+        }
+
         queryAllDiscoveryLists();
+
         if (NetworkUtil.isWifiActive(getApplicationContext())) {
             Log.i(LOG_TAG, "buildCache: Not on Wifi! Skipping query for extended movie info.");
             queryExtendedMovieInfo();

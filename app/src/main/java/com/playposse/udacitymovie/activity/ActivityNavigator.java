@@ -10,11 +10,11 @@ import com.playposse.udacitymovie.activity.DiscoverActivity.DiscoveryCategory;
 /**
  * A utility that helps navigating between activities.
  */
-final class ActivityNavigator {
+public final class ActivityNavigator {
 
     private ActivityNavigator() {}
 
-    static void startDiscoverActivity(Context context, int menuResId) {
+    public static void startDiscoverActivity(Context context, int menuResId) {
         startDiscoverActivity(context, getDiscoveryCategory(menuResId));
     }
 
@@ -67,5 +67,9 @@ final class ActivityNavigator {
 
     static void startFavoriteActivity(Context context) {
         context.startActivity(new Intent(context, FavoriteActivity.class));
+    }
+
+    public static void startNoNetworkActivity(Context context) {
+        context.startActivity(new Intent(context, NoNetworkActivity.class));
     }
 }
