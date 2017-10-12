@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.playposse.udacitymovie.BuildConfig;
 import com.playposse.udacitymovie.data.ContentProviderQueries;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryListTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieReviewTable;
@@ -69,9 +70,12 @@ public class BuildMovieCacheService extends IntentService {
         long end = System.currentTimeMillis();
         Log.i(LOG_TAG, "onHandleIntent: Fetching movie data took " + (end - start) + "ms.");
 
-        MovieDatabaseHelper databaseHelper = new MovieDatabaseHelper(context);
-        DatabaseDumper.dumpTables(databaseHelper);
-        databaseHelper.close();
+        // Dump the database to the log.
+        if (BuildConfig.DEBUG) {
+            MovieDatabaseHelper databaseHelper = new MovieDatabaseHelper(context);
+            DatabaseDumper.dumpTables(databaseHelper);
+            databaseHelper.close();
+        }
     }
 
     private void buildCache() {

@@ -18,7 +18,10 @@ public class UdacityMovieApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        getApplicationContext().deleteDatabase(MovieDatabaseHelper.DB_NAME);
+        // Start with a fresh database when running for debug.
+        if (BuildConfig.DEBUG) {
+            getApplicationContext().deleteDatabase(MovieDatabaseHelper.DB_NAME);
+        }
 
         // Listen to network changes.
         IntentFilter intentFilter = new IntentFilter();
