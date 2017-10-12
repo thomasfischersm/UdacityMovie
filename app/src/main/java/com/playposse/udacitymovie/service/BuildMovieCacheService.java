@@ -57,6 +57,11 @@ public class BuildMovieCacheService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        if (!NetworkUtil.hasNetwork(getApplicationContext())) {
+            Log.i(LOG_TAG, "onHandleIntent: Skipping BuildMovieCacheService because no network");
+            return;
+        }
+
         long start = System.currentTimeMillis();
         Context context = getApplicationContext();
 

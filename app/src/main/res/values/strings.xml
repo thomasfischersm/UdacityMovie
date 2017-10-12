@@ -32,4 +32,8 @@
 
     <!-- No network connectivity activity -->
     <string name="network_down">Sadly, your internet appears to be down.</string>
+
+    <!-- Toasts -->
+    <string name="network_restored_toast">Network has been restored. You\'ll see fresh data.</string>
+    <string name="network_lost_toast">Network has been lost. You\'ll see cached data only.</string>
 </resources>
