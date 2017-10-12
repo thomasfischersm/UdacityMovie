@@ -91,6 +91,28 @@ public final class ContentProviderQueries {
         }
     }
 
+    public static boolean doesMovieHaveExtendedInfo(Context context, long movieId) {
+        ContentResolver contentResolver = context.getContentResolver();
+
+        Cursor cursor = contentResolver.query(
+                MovieTable.CONTENT_URI,
+                null,
+                MovieTable.ID_COLUMN + "=? and has_extended_info <> 0",
+                new String[]{Long.toString(movieId)},
+                null);
+
+        if (cursor == null) {
+            Log.e(LOG_TAG, "doesMovieHaveExtendedInfo: The cursor was unexpectedly null!");
+            return false;
+        }
+
+        try {
+            return cursor.getCount() > 0;
+        } finally {
+            cursor.close();
+        }
+    }
+
     public static void insertMovie(Context context, ContentValues values) {
         ContentResolver contentResolver = context.getContentResolver();
 

@@ -10,6 +10,7 @@ import com.playposse.udacitymovie.service.BuildMovieCacheService;
  * Implementation of the {@link Application}.
  */
 public class UdacityMovieApplication extends Application {
+
     @Override
     public void onCreate() {
         super.onCreate();

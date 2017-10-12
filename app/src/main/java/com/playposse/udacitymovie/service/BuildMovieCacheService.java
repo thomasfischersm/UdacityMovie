@@ -16,6 +16,7 @@ import com.playposse.udacitymovie.data.MovieContentContract.MovieTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieVideoTable;
 import com.playposse.udacitymovie.data.MovieDatabaseHelper;
 import com.playposse.udacitymovie.util.DatabaseDumper;
+import com.playposse.udacitymovie.util.NetworkUtil;
 import com.playposse.udacitymovie.util.SmartCursor;
 
 import java.util.ArrayList;
@@ -28,8 +29,22 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage;
 
 /**
  * A {@link Service} that queries the Movie DB API to cache all useful data locally.
+ *
+ * <p>There are different ways to invoke this service:
+ * <ul>
+ *     <li>No parameter means to fill the basic cache.</li>
+ *     <li>Specify a movieId and the extended information for that movie is loaded.</li>
+ * </ul>
+ * 
+ * <p>The initial cache call only loads the extended movie info on WiFi.
  */
 public class BuildMovieCacheService extends IntentService {
+
+    /**
+     * Intent parameter to specify for a specific movieId. The extended info for that movie will
+     * be loaded.
+     */
+    public static final String MOVIE_ID_KEY = "movieId";
 
     private static final String LOG_TAG = BuildMovieCacheService.class.getSimpleName();
 
@@ -43,8 +58,13 @@ public class BuildMovieCacheService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         long start = System.currentTimeMillis();
         Context context = getApplicationContext();
-        queryAllDiscoveryLists();
-        queryExtendedMovieInfo();
+
+        long movieId = (intent != null) ? intent.getLongExtra(MOVIE_ID_KEY, -1) : -1;
+        if (movieId != -1) {
+            queryExtendedMovieInfo(movieId);
+        } else {
+            buildCache();
+        }
 
         long end = System.currentTimeMillis();
         Log.i(LOG_TAG, "onHandleIntent: Fetching movie data took " + (end - start) + "ms.");
@@ -52,6 +72,14 @@ public class BuildMovieCacheService extends IntentService {
         MovieDatabaseHelper databaseHelper = new MovieDatabaseHelper(context);
         DatabaseDumper.dumpTables(databaseHelper);
         databaseHelper.close();
+    }
+
+    private void buildCache() {
+        queryAllDiscoveryLists();
+        if (NetworkUtil.isWifiActive(getApplicationContext())) {
+            Log.i(LOG_TAG, "buildCache: Not on Wifi! Skipping query for extended movie info.");
+            queryExtendedMovieInfo();
+        }
     }
 
     private void queryAllDiscoveryLists() {
@@ -206,5 +234,12 @@ public class BuildMovieCacheService extends IntentService {
         }
 
         Log.i(LOG_TAG, "queryExtendedMovieInfo: Got extended movie info for " + count + " movies.");
+    }
+
+    private void queryExtendedMovieInfo(long movieId) {
+        if (!ContentProviderQueries.doesMovieHaveExtendedInfo(getApplicationContext(), movieId)) {
+            MovieDb movie = MovieDbApiQueries.getExtendedMovieInfo(movieId);
+            insertOrUpdateMovie(movie, true);
+        }
     }
 }

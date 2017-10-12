@@ -25,6 +25,7 @@ import com.playposse.udacitymovie.data.MovieContentContract.MovieQuery;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieReviewTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieTable;
 import com.playposse.udacitymovie.data.MovieContentContract.MovieVideoTable;
+import com.playposse.udacitymovie.service.BuildMovieCacheService;
 import com.playposse.udacitymovie.util.MediaUrlBuilder;
 import com.playposse.udacitymovie.util.RecyclerViewCursorAdapter;
 import com.playposse.udacitymovie.util.SmartCursor;
@@ -82,7 +83,20 @@ public class MovieFragment extends Fragment {
 
         if (getArguments() != null) {
             movieId = getArguments().getLong(MOVIE_ID);
+
+            cacheMovieData();
         }
+    }
+
+    /**
+     * Calls the {@link BuildMovieCacheService} to load/cache the extended movie data. If the
+     * device is running on WiFi, the data should already be cached. If it is off WiFi, the data
+     * will retrieved only once the user visits the movie page.
+     */
+    private void cacheMovieData() {
+        Intent intent = new Intent(getActivity(), BuildMovieCacheService.class);
+        intent.putExtra(BuildMovieCacheService.MOVIE_ID_KEY, movieId);
+        getActivity().startService(intent);
     }
 
     @Override
