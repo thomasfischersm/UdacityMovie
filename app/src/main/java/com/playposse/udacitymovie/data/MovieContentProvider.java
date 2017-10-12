@@ -321,6 +321,7 @@ public class MovieContentProvider extends ContentProvider {
             case FAVORITE_TABLE_KEY:
                 count = database.delete(FavoriteTable.TABLE_NAME, selection, selectionArgs);
                 contentResolver.notifyChange(FavoriteTable.CONTENT_URI, null);
+                contentResolver.notifyChange(FavoriteQuery.CONTENT_URI, null);
                 contentResolver.notifyChange(MovieTable.CONTENT_URI, null);
                 contentResolver.notifyChange(DiscoveryCategoryQuery.CONTENT_URI, null);
                 contentResolver.notifyChange(MovieQuery.CONTENT_URI, null);
