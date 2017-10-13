@@ -73,3 +73,7 @@ scratch for this one.
 - The icon to favorite a movie is in the top right of the backdrop on the movie detail page.
 Depending on the movie backdrop, it can be hard to see. I've added a translucent white background.
 The icon is a heart.
+
+- I've used stackoverflow and the Android documentation quite a bit. There are individual lines of
+code or short snippets copy-pasted and modified in the code all over the place. For example, I've
+lifted the code to check for WiFi and adjusted it for my needs.
