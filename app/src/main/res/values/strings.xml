@@ -36,4 +36,8 @@
     <!-- Toasts -->
     <string name="network_restored_toast">Network has been restored. You\'ll see fresh data.</string>
     <string name="network_lost_toast">Network has been lost. You\'ll see cached data only.</string>
+
+    <!-- Action bar menu -->
+    <string name="share_action">Share</string>
+    <string name="share_subject">Check out this movie!</string>
 </resources>

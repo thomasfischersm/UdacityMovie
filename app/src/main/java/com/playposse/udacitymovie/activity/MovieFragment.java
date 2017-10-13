@@ -136,6 +136,7 @@ public class MovieFragment extends Fragment {
         Log.i(LOG_TAG, "onActivityCreated: for Fragment " + MovieFragment.this.hashCode());
         super.onActivityCreated(savedInstanceState);
 
+        ((MovieActivity) getActivity()).setShareIntent(null);
         getLoaderManager().initLoader(MOVIE_LOADER_MANAGER_ID, null, new MovieLoaderCallbacks());
         getLoaderManager().initLoader(VIDEO_LOADER_MANAGER_ID, null, new VideoLoaderCallbacks());
         getLoaderManager().initLoader(REVIEW_LOADER_MANAGER_ID, null, new ReviewLoaderCallbacks());
@@ -235,6 +236,20 @@ public class MovieFragment extends Fragment {
 
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+            // Set the share intent.
+            if (cursor.moveToFirst()) {
+                SmartCursor smartCursor = new SmartCursor(cursor, MovieVideoTable.COLUMN_NAMES);
+                String key = smartCursor.getString(MovieVideoTable.KEY_COLUMN);
+                String youTubeUrl = MediaUrlBuilder.buildYouTubeUrl(key);
+
+                ((MovieActivity) getActivity()).setShareIntent(youTubeUrl);
+
+                cursor.moveToPrevious();
+            } else {
+                ((MovieActivity) getActivity()).setShareIntent(null);
+
+            }
+
             videoAdapter.swapCursor(cursor);
         }
 
