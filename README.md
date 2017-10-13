@@ -15,7 +15,7 @@ https://developer.android.com/studio/preview/index.html
 # How to specify the api key
 
 Create a class like this:
-'''java
+```java
 package com.playposse.udacitymovie;
 
 /**
@@ -29,7 +29,7 @@ public class Secrets {
         return movieApiKeyV3;
     }
 }
-'''
+```
 
 
 # Coding Standard
