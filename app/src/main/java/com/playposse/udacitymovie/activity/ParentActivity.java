@@ -14,9 +14,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.playposse.udacitymovie.R;
+import com.playposse.udacitymovie.util.FontUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,6 +90,11 @@ public abstract class ParentActivity extends AppCompatActivity {
                         return onOptionsItemSelected(item);
                     }
                 });
+
+        // Set custom font on navigation header
+        View headerView = navigationView.getHeaderView(0);
+        TextView appTitleTextView = headerView.findViewById(R.id.app_title_text_view);
+        FontUtil.apply(appTitleTextView, FontUtil.YELLOWTAIL_FONT);
     }
 
     protected void addMainFragment(Fragment mainFragment) {

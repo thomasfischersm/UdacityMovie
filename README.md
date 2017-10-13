@@ -6,10 +6,8 @@ the same time.
 # IMPORTANT: GETTING STARTED
 Follow these instructions or the app won't run!
 
-1. Use Android Studio3.0. You can install it from here: 
-https://developer.android.com/studio/preview/index.html
-2. Specify the API key by creating a class called Secrets.java.
-3. Use the RELEASE build variant. The DEBUG build variant will reset the database on app restart.
+1. Specify the API key by creating a class called Secrets.java.
+2. Use the RELEASE build variant. The DEBUG build variant will reset the database on app restart.
 
 
 # How to specify the api key
