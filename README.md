@@ -63,3 +63,13 @@ Example:
 The user has only a regular data connection (no WiFi). The user will see the lists instantly from
 the cache. When tapping a movie, the user will see the basic movie info. A fraction of a second
 later, the full movie info (e.g. tagline, backdrop) will appear as the background query completes.
+
+
+# Notes
+- You will find some unused methods in the utility classes. I've created a few utility classes that
+I use on my projects. I copy them from one project to the next. So, I didn't create them from
+scratch for this one.
+
+- The icon to favorite a movie is in the top right of the backdrop on the movie detail page.
+Depending on the movie backdrop, it can be hard to see. I've added a translucent white background.
+The icon is a heart.
