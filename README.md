@@ -15,6 +15,7 @@ https://developer.android.com/studio/preview/index.html
 # How to specify the api key
 
 Create a class like this:
+'''java
 package com.playposse.udacitymovie;
 
 /**
@@ -28,12 +29,15 @@ public class Secrets {
         return movieApiKeyV3;
     }
 }
+'''
 
 
 # Coding Standard
 - I am a conscientious dissenter of prefixing field names with the letter 'm'. This app follows
 the Google coding standard, not that of the Android team. There are plenty of intelligent arguments
-on the Internet by leaders of the community why the prefixes are bad.
+on the Internet by leaders of the community why the prefixes are bad. If you are looking for a
+pointer to get started on this topic, here you go: 
+http://jakewharton.com/just-say-no-to-hungarian-notation/
 
 - The Udacity coding standard asks for all public methods to be commented. I did NOT comment
 obvious methods. For example, a 'newInstance' method on a fragment is probably going to create a
