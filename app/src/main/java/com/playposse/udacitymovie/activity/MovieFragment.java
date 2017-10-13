@@ -305,9 +305,14 @@ public class MovieFragment extends Fragment {
             SmartCursor smartCursor = new SmartCursor(cursor, MovieVideoTable.COLUMN_NAMES);
             String type = smartCursor.getString(MovieVideoTable.TYPE_COLUMN);
             String key = smartCursor.getString(MovieVideoTable.KEY_COLUMN);
+            String youTubeThumbnailUrl = MediaUrlBuilder.buildYouTubeThumbnailUrl(key);
             final String youTubeUrl = MediaUrlBuilder.buildYouTubeUrl(key);
 
             holder.typeTextView.setText(type);
+
+            Glide.with(getActivity())
+                    .load(youTubeThumbnailUrl)
+                    .into(holder.videoThumbnailImageView);
 
             holder.rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -324,6 +329,7 @@ public class MovieFragment extends Fragment {
     class VideoViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.root_view) LinearLayout rootView;
+        @BindView(R.id.video_thumbnail_image_view) ImageView videoThumbnailImageView;
         @BindView(R.id.type_text_view) TextView typeTextView;
 
         private VideoViewHolder(View itemView) {
