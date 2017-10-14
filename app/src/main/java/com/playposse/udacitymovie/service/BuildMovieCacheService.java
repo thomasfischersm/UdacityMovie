@@ -41,15 +41,17 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage;
  */
 public class BuildMovieCacheService extends IntentService {
 
+    private static final String LOG_TAG = BuildMovieCacheService.class.getSimpleName();
+
     /**
      * Intent parameter to specify for a specific movieId. The extended info for that movie will
      * be loaded.
      */
     public static final String MOVIE_ID_KEY = "movieId";
 
-    private static final String LOG_TAG = BuildMovieCacheService.class.getSimpleName();
-
     private static final String SERVICE_NAME = "BuildMovieCacheService";
+    public static final String HARD_CODED_POPULARITY_TAG = "popularity.desc";
+    public static final String HARD_CODED_HIGHEST_RATED_TAG = "vote_average.desc";
 
     public BuildMovieCacheService() {
         super(SERVICE_NAME);
@@ -124,8 +126,19 @@ public class BuildMovieCacheService extends IntentService {
                 discoveryListId);
         Log.i(LOG_TAG, "onHandleIntent: Deleted link rows: " + deleteCount);
 
+        // A Udacity reviewer didn't like using the discover feature as the Movie DB API
+        // documentation suggested. So, here are the two lists hard coded instead of using the
+        // flexible configurable discovery way that would make it very easy to add additional lists.
+        final MovieResultsPage resultsPage;
+        if (HARD_CODED_POPULARITY_TAG.equals(sortBy)) {
+            resultsPage = MovieDbApiQueries.getPopularMovies();
+        } else if (HARD_CODED_HIGHEST_RATED_TAG.equals(sortBy)) {
+            resultsPage = MovieDbApiQueries.getTopRatedMovies();
+        } else {
+            resultsPage = MovieDbApiQueries.getDiscoveryList(sortBy);
+        }
+
         // Create link entries and movies
-        MovieResultsPage resultsPage = MovieDbApiQueries.getDiscoveryList(sortBy);
         for (MovieDb movie : resultsPage.getResults()) {
             int movieId = movie.getId();
 

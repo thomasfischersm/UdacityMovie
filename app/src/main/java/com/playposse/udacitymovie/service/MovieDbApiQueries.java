@@ -17,6 +17,7 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage;
 final class MovieDbApiQueries {
 
     private static final String LANGUAGE = "en";
+    private static final int INITIAL_PAGE = 1;
 
     private MovieDbApiQueries() {
     }
@@ -30,6 +31,14 @@ final class MovieDbApiQueries {
         Discover discover = new Discover();
         discover.sortBy(sortByFilter);
         return getTmdbApi().getDiscover().getDiscover(discover);
+    }
+
+    static MovieResultsPage getTopRatedMovies() {
+        return getTmdbApi().getMovies().getTopRatedMovies(LANGUAGE, INITIAL_PAGE);
+    }
+
+    static MovieResultsPage getPopularMovies() {
+        return getTmdbApi().getMovies().getPopularMovies(LANGUAGE, INITIAL_PAGE);
     }
 
     static MovieDb getExtendedMovieInfo(long movieId) {

@@ -150,7 +150,6 @@ public class MovieContentProvider extends ContentProvider {
         return null;
     }
 
-
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
@@ -199,7 +198,6 @@ public class MovieContentProvider extends ContentProvider {
                 return null;
         }
     }
-
 
     @Override
     public int update(
