@@ -73,6 +73,7 @@
                 android:id="@+id/poster_image_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
                 android:contentDescription="@string/poster_content_description"
                 app:layout_columnWeight="1"/>
 

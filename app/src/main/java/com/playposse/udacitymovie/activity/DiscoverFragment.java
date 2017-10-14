@@ -2,6 +2,8 @@ package com.playposse.udacitymovie.activity;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -17,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.playposse.udacitymovie.R;
 import com.playposse.udacitymovie.activity.DiscoverActivity.DiscoveryCategory;
 import com.playposse.udacitymovie.data.MovieContentContract.DiscoveryCategoryQuery;
@@ -36,11 +40,13 @@ public class DiscoverFragment extends Fragment implements LoaderManager.LoaderCa
     private static final String CATEGORY_MENU_RES_ID = "categoryMenuResId";
     private static final int GRID_SPAN = 3;
     private static final int LOADER_MANAGER = 1;
+    private static final String RECYCLER_STATE_KEY = "recyclerLayoutStateKey";
 
     @BindView(R.id.movie_recycler_view) RecyclerView movieRecyclerView;
 
     private DiscoveryCategory discoveryCategory;
     private MovieAdapter movieAdapter;
+    private Parcelable recyclerState;
 
     /**
      * Creates a new instance of this Fragment.
@@ -92,6 +98,27 @@ public class DiscoverFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            recyclerState = savedInstanceState.getParcelable(RECYCLER_STATE_KEY);
+            if (recyclerState != null) {
+                movieRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerState);
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(
+                RECYCLER_STATE_KEY,
+                movieRecyclerView.getLayoutManager().onSaveInstanceState());
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(
                 getActivity(),
@@ -105,6 +132,11 @@ public class DiscoverFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         movieAdapter.swapCursor(cursor);
+
+        if (recyclerState != null) {
+            movieRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerState);
+            recyclerState = null;
+        }
     }
 
     @Override
@@ -139,6 +171,7 @@ public class DiscoverFragment extends Fragment implements LoaderManager.LoaderCa
             if (posterPath != null) {
                 Glide.with(getActivity())
                         .load(posterUrl)
+                        .apply(RequestOptions.overrideOf(Target.SIZE_ORIGINAL))
                         .into(holder.posterImageView);
             }
             holder.titleTextView.setText(title);

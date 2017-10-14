@@ -10,11 +10,13 @@ import org.apache.commons.lang3.ArrayUtils;
 /**
  * A contract for the {@link MovieContentProvider}.
  */
-public class MovieContentContract {
+public final class MovieContentContract {
 
     public static final String AUTHORITY = "com.playposse.udacitymovie.provider";
 
     private static final String CONTENT_SCHEME = "content";
+
+    private MovieContentContract() {}
 
     private static Uri createContentUri(String path) {
         return new Uri.Builder()
